@@ -1,0 +1,14 @@
+body {
+	text-align: center;
+	color: black;
+	background-color: #F5DEB3;
+	font-family: arial;
+	font-size: 50px;
+}
+
+#slogan {
+	text-align: center;
+	color: red;
+	font-family: arial;
+	font-size: 35px;
+}
