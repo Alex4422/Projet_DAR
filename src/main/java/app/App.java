@@ -5,8 +5,8 @@ public class App {
 
     public static String dbUrl() {
         String url = System.getenv("JDBC_DATABASE_URL");
-        if (url.isEmpty()) {
-            url = "jdbc:sqlite:localdb.sql";
+        if (url == null) {
+            url = "jdbc:sqlite:localdb.sqlite";
         }
         return url;
     }

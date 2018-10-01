@@ -1,28 +1,53 @@
 package app;
 
-import db.DBTable;
-
-public class User implements DBTable {
+public class User {
     private String username;
     private String password;
     private Integer id = -1;
-
-    private static String insertTemplate = "INSERT INTO users (username, password) VALUES ('%s', '%s');";
-
-    public static String tableCreationQuery =
-            "CREATE TABLE IF NOT EXISTS users (" +
-                "id integer PRIMARY KEY AUTOINCREMENT," +
-                "username text NOT NULL," +
-                "password text NOT NULL," +
-                "CONSTRAINT name_unique UNIQUE (username));";
 
     public User(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
+    public User(String username, String password, int id) {
+        this.username = username;
+        this.password = password;
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     @Override
-    public String insertStatement() {
-        return String.format(insertTemplate, username, password);
+    public boolean equals(Object other) {
+        if (! (other instanceof User)) {
+            return false;
+        }
+
+        User rhs = (User) other;
+
+        return rhs.username.equals(username) && rhs.password.equals(password);
     }
 }
