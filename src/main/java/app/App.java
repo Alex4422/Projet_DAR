@@ -6,7 +6,7 @@ public class App {
     public static String dbUrl() {
         String url = System.getenv("JDBC_DATABASE_URL");
         if (url == null) {
-            url = "jdbc:sqlite:localdb.sqlite";
+            url = "jdbc:h2:./localdb";
         }
         return url;
     }
@@ -14,8 +14,8 @@ public class App {
     public static String dbClass() {
         String dbms = getDBMS();
         switch (dbms) {
-            case "sqlite":
-                return "org.sqlite.JDBC";
+            case "h2":
+                return "org.h2.Driver";
             case "postgresql":
                 return "org.postgresql.Driver";
             default:
@@ -27,8 +27,8 @@ public class App {
         String dbms = getDBMS();
         String base = "org.hibernate.dialect.";
         switch (dbms) {
-            case "sqlite":
-                return base + "SQLiteDialect";
+            case "h2":
+                return base + "H2Dialect";
             case "postgresql":
                 return base + "PostgreSQLDialect";
             default:

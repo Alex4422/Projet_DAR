@@ -4,6 +4,7 @@ import entities.User;
 import entities.UsersService;
 import launch.Main;
 import org.hibernate.Session;
+import org.hibernate.exception.ConstraintViolationException;
 
 import java.io.IOException;
 
@@ -27,9 +28,9 @@ public class Users extends HttpServlet {
 
         try {
             UsersService.addUser(username, password);
-        } catch (PersistenceException e) {
+        } catch (ConstraintViolationException e) {
             res.setStatus(400);
-            res.getOutputStream().write("Invalid user".getBytes());
+            res.getOutputStream().write("User already exists".getBytes());
         }
 
         res.getOutputStream().flush();

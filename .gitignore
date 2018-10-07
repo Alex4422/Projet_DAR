@@ -7,3 +7,5 @@
 localdb\.sqlite
 
 site_db\.sqlite
+
+*.db

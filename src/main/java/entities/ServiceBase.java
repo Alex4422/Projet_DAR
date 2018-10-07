@@ -1,7 +1,6 @@
 package entities;
 
 import launch.Main;
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
 import java.util.List;
@@ -16,14 +15,14 @@ public class ServiceBase {
         }
 
         s.getTransaction().commit();
+        s.close();
     }
 
     public static void add(Object o) {
         Session s = Main.getFactory().openSession();
         s.beginTransaction();
         s.save(o);
-        s.flush();
-        s.clear();
         s.getTransaction().commit();
+        s.close();
     }
 }

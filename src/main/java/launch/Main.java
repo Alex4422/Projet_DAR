@@ -54,7 +54,7 @@ public class Main {
                 .setProperty("hibernate.connection.url", App.dbUrl())
                 .setProperty("hibernate.connection.driver_class", App.dbClass())
                 .setProperty("hibernate.dialect", App.dbDialect())
-                .setProperty("hibernate.hbm2ddl.auto", "update")
+                .setProperty("hibernate.hbm2ddl.auto", "create")
                 .buildSessionFactory();
     }
 }
