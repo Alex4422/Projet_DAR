@@ -3,7 +3,6 @@ package launch;
 import java.io.File;
 
 import app.App;
-import entities.UsersService;
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;

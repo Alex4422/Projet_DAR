@@ -1,14 +1,10 @@
 package servlet;
 
-import entities.User;
-import entities.UsersService;
-import launch.Main;
-import org.hibernate.Session;
+import services.UsersService;
 import org.hibernate.exception.ConstraintViolationException;
 
 import java.io.IOException;
 
-import javax.persistence.PersistenceException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
