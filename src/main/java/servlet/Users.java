@@ -1,11 +1,13 @@
 package servlet;
 
-import app.User;
-import app.UserService;
+import entities.User;
+import entities.UsersService;
+import launch.Main;
+import org.hibernate.Session;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
+import javax.persistence.PersistenceException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,15 +24,12 @@ public class Users extends HttpServlet {
 
         String username = req.getParameter("username");
         String password = req.getParameter("password");
-        User newUser = new User(username, password);
 
         try {
-            new UserService().save(newUser);
-            res.setStatus(200);
-            res.getOutputStream().write("User successfully registered".getBytes());
-        } catch (SQLException e) {
+            UsersService.addUser(username, password);
+        } catch (PersistenceException e) {
             res.setStatus(400);
-            res.getOutputStream().write(e.getMessage().getBytes());
+            res.getOutputStream().write("Invalid user".getBytes());
         }
 
         res.getOutputStream().flush();
