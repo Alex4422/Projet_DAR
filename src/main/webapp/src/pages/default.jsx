@@ -20,25 +20,13 @@ class DefaultPage extends React.Component {
             flexDirection: 'row',
             margin: 'auto',
             width: 400,
-            height: 100,
-        };
-
-        let buttonStyle = {
-            width: 110,
-            height: 50,
-            margin: 16,
         };
 
         return (
-            [<DefaultHeader/>,
+            [<DefaultHeader {...this.props}/>,
             <div style={divStyle}>
                 <Card style={cardStyle} raised="true" square="true" component="div">
-                    <Button variant="contained" color="primary" style={buttonStyle}>
-                        Sign in
-                    </Button>
-                    <Button variant="contained" color="primary" style={buttonStyle}>
-                        Sign up
-                    </Button>
+                    {this.props.children}
                 </Card>
             </div>]
         );
@@ -63,7 +51,7 @@ class DefaultHeader extends React.Component {
 
         return (
             <div style={divStyle}>
-                <p style={titleStyle}>SuperSeries</p>
+                <p style={titleStyle}>{this.props.title}</p>
             </div>
         );
     }

@@ -1,21 +1,37 @@
 import React from 'react';
 import DefaultPage from './default'
-import SPA from "./spa";
+import {SignInSignUp, SignUp} from "../components/signin_signup";
 
 class MainPage extends React.Component {
-    constructor(props, context) {
-        super(props, context)
+    constructor(props) {
+        super(props)
         this.state = {
-            loggedIn: false,
-        }
+            title: "SuperSeries",
+            content: <SignInSignUp onSignUp={() => this.showSignup()}/>,
+        };
     }
 
     render() {
-        if (this.state.loggedIn) {
-            return <SPA/>;
-        } else {
-            return <DefaultPage/>;
-        }
+        return (
+            <DefaultPage title={this.state.title}>
+                {this.state.content}
+            </DefaultPage>
+        );
+    }
+
+    showSignInSignUp() {
+        this.setState({
+            title: "SuperSeries",
+            content: <SignInSignUp onSignUp={() => this.showSignup()}/>,
+        })
+    }
+
+    showSignup() {
+        this.setState({
+            title: 'Sign Up',
+            content: <SignUp/>,
+        });
+        this.render()
     }
 }
 
