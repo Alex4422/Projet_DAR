@@ -1,8 +1,9 @@
 import React from 'react';
 import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card'
+import TextField from "@material-ui/core/TextField/TextField";
 
-class DefaultPage extends React.Component {
+class AuthenticationPage extends React.Component {
     render() {
         let divStyle =  {
             display: 'flex',
@@ -15,46 +16,38 @@ class DefaultPage extends React.Component {
 
         let cardStyle = {
             display: 'flex',
-            justifyContent: 'space-evenly',
+            justifyContent: 'space-between',
             alignItems: 'center',
-            flexDirection: 'row',
+            flexDirection: 'column',
             margin: 'auto',
             width: 400,
+            padding: 24,
         };
 
         return (
-            [<DefaultHeader {...this.props}/>,
             <div style={divStyle}>
-                <Card style={cardStyle} raised="true" square="true" component="div">
+                <Card style={cardStyle}>
                     {this.props.children}
                 </Card>
-            </div>]
-        );
-    }
-}
-
-class DefaultHeader extends React.Component {
-    render() {
-        let divStyle = {
-            backgroundColor: "#222",
-            height: 100,
-            display: 'flex',
-            flexDirection: 'column',
-        };
-
-        let titleStyle = {
-            color: "#FFF",
-            fontSize: 48,
-            weight: 'bold',
-            margin: 'auto'
-        };
-
-        return (
-            <div style={divStyle}>
-                <p style={titleStyle}>{this.props.title}</p>
             </div>
         );
     }
 }
 
-export default DefaultPage
+const LoginPage = () => {
+    let textFieldStyle = {
+        marginBottom: 16
+    };
+
+    return (
+        <AuthenticationPage>
+            <TextField style={textFieldStyle} variant="outlined" label="Username"/>
+            <TextField style={textFieldStyle} variant="outlined" label="Password" type='password'/>
+            <Button variant="contained" color="primary">
+                Login
+            </Button>
+        </AuthenticationPage>
+    );
+}
+
+export {AuthenticationPage, LoginPage}

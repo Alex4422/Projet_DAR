@@ -6,7 +6,7 @@ class SignInSignUp extends React.Component {
     render() {
         let buttonStyle = {
             width: 110,
-            height: 50,
+            height: 10,
             margin: 16,
         };
 
