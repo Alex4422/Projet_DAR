@@ -2,15 +2,21 @@ package launch;
 
 import java.io.File;
 
+import app.App;
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 
 public class Main {
+    private static SessionFactory factory;
 
     public static void main(String[] args) throws Exception {
+        initDb();
+
         String appDir = "src/main/webapp/";
         Tomcat tomcat = new Tomcat();
 
@@ -32,5 +38,22 @@ public class Main {
 
         tomcat.start();
         tomcat.getServer().await();
+    }
+
+    public static SessionFactory getFactory() {
+        if (factory == null) {
+            initDb();
+        }
+        return factory;
+    }
+
+    private static void initDb() {
+        factory = new Configuration()
+                .addAnnotatedClass(entities.User.class)
+                .setProperty("hibernate.connection.url", App.dbUrl())
+                .setProperty("hibernate.connection.driver_class", App.dbClass())
+                .setProperty("hibernate.dialect", App.dbDialect())
+                .setProperty("hibernate.hbm2ddl.auto", "create")
+                .buildSessionFactory();
     }
 }

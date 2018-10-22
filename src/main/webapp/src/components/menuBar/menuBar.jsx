@@ -6,7 +6,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import AccountCircle from '@material-ui/icons/AccountCircle';
+import Home from '@material-ui/icons/Home'
 
 import {AppContext} from '../../pages/app';
 import {USER_TOKEN} from '../../globals'
@@ -21,6 +21,9 @@ class MenuBar extends React.Component {
         return (
             <AppBar position="static" color="default">
                 <Toolbar>
+                    <IconButton onClick={() => this.props.history.push('/')}>
+                        <Home/>
+                    </IconButton>
                     <Typography style={labelStyle} variant="h6">
                         SuperSeries
                     </Typography>
@@ -38,27 +41,6 @@ class MenuBar extends React.Component {
     }
 }
 
-class UserArea extends React.Component {
-    render() {
-        if (this.props[USER_TOKEN] === "") {
-            return ([
-                <Button onClick={() => this.props.history.push('/login')}>
-                    Login
-                </Button>,
-                <Button>
-                    Sign up
-                </Button>
-            ]);
-        } else {
-            return (
-                <IconButton onClick={() => this.props.setUserToken("")}>
-                    <AccountCircle/>
-                </IconButton>
-            );
-        }
-    }
-}
+const RoutedMenuBar = withRouter(MenuBar);
 
-const RoutedUserArea = withRouter(UserArea);
-
-export default MenuBar;
+export default RoutedMenuBar;
