@@ -14,7 +14,8 @@ public class UserSession implements Serializable {
     @Column(name = "user_session_uuid", nullable = false)
     private String uuid = "";
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
     User user;
 
     public UserSession() {}
@@ -24,7 +25,7 @@ public class UserSession implements Serializable {
         this.uuid = generateUuid();
     }
 
-    private String generateUuid() {
+    private static String generateUuid() {
         return UUID.randomUUID().toString();
     }
 

@@ -50,6 +50,7 @@ public class Main {
     private static void initDb() {
         factory = new Configuration()
                 .addAnnotatedClass(entities.User.class)
+                .addAnnotatedClass(entities.UserSession.class)
                 .setProperty("hibernate.connection.url", App.dbUrl())
                 .setProperty("hibernate.connection.driver_class", App.dbClass())
                 .setProperty("hibernate.dialect", App.dbDialect())

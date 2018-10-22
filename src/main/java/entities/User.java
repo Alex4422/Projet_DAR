@@ -8,6 +8,7 @@ import java.util.Arrays;
 @Table(name = "people")
 public class User implements Serializable {
     @Id
+    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 

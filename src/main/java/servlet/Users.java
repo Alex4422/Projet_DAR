@@ -21,13 +21,16 @@ public class Users extends HttpServlet {
 
         String username = req.getParameter("username");
         String password = req.getParameter("password");
-
+        String uuid = "";
         try {
-            UsersService.addUser(username, password);
+            uuid = UsersService.addUser(username, password);
         } catch (ConstraintViolationException e) {
             res.setStatus(400);
             res.getOutputStream().write("User already exists".getBytes());
+            return;
         }
+
+        res.getOutputStream().write(String.format("{ userToken: \"%s\" }", uuid).getBytes());
 
         res.getOutputStream().flush();
         res.getOutputStream().close();
