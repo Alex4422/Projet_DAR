@@ -10,13 +10,10 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 
 import {AppContext} from '../../pages/app';
 import {USER_TOKEN} from '../../globals'
+import {LoginDialog, SignupDialog} from "./user_dialogs";
 
 class MenuBar extends React.Component {
     render() {
-        let menuButtonStyle = {
-            marginRight: 16
-        };
-
         let labelStyle = {
             flexGrow: 1
         }
@@ -27,10 +24,15 @@ class MenuBar extends React.Component {
                     <Typography style={labelStyle} variant="h6">
                         SuperSeries
                     </Typography>
-                    <AppContext.Consumer>
-                        {(context) => <RoutedUserArea {...context}/>}
-                    </AppContext.Consumer>
+                    <Button onClick={() => { this.loginDialog.openDialog() }}>
+                        Login
+                    </Button>
+                    <Button onClick={() => { this.signupDialog.openDialog() }}>
+                        Sign Up
+                    </Button>
                 </Toolbar>
+                <LoginDialog onRef={(ref) => this.loginDialog = ref}/>
+                <SignupDialog onRef={(ref) => this.signupDialog = ref}/>
             </AppBar>
         );
     }
