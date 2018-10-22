@@ -2,7 +2,7 @@ import React from 'react';
 import {Route, NavLink, HashRouter} from "react-router-dom";
 
 import HomePage from './home';
-import MenuBar from '../components/menuBar/menuBar';
+import RoutedMenuBar from '../components/menuBar/menuBar';
 
 const AppContext = React.createContext();
 
@@ -26,7 +26,7 @@ class App extends React.Component {
             <AppContext.Provider value={this.state}>
                 <HashRouter>
                     <div>
-                        <MenuBar/>
+                        <RoutedMenuBar/>
                         <div className="content" style={divStyle}>
                             <Route exact path="/" component={HomePage}/>
                         </div>
