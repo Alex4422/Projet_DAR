@@ -24,13 +24,12 @@ public class Users extends HttpServlet {
         String uuid = "";
         try {
             uuid = UsersService.addUser(username, password);
+            res.getOutputStream().write(String.format("{ userToken: \"%s\" }", uuid).getBytes());
         } catch (ConstraintViolationException e) {
             res.setStatus(400);
             res.getOutputStream().write("User already exists".getBytes());
             return;
         }
-
-        res.getOutputStream().write(String.format("{ userToken: \"%s\" }", uuid).getBytes());
 
         res.getOutputStream().flush();
         res.getOutputStream().close();
