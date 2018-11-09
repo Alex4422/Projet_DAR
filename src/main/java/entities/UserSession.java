@@ -14,7 +14,7 @@ public class UserSession implements Serializable {
     @Column(name = "user_session_uuid", nullable = false)
     private String uuid = "";
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     User user;
 

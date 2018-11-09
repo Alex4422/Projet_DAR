@@ -19,6 +19,9 @@ public class User implements Serializable {
     @Column(name = "password", nullable = false)
     private byte[] password;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private UserSession session;
+
     public User() { }
 
     public User(String username, byte[] password) {

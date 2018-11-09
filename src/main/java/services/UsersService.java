@@ -3,17 +3,20 @@ package services;
 import entities.User;
 import entities.UserSession;
 import org.hibernate.Session;
+import org.hibernate.exception.ConstraintViolationException;
+import services.errors.UserExistsException;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class UsersService extends ServiceBase {
-    public static String addUser(String username, String passWord) {
+    public static void addUser(String username, String passWord) throws UserExistsException {
         User user = new User(username, hashPassWord(passWord));
-        UserSession userSession = new UserSession(user);
-        add(user);
-        add(userSession);
-        return userSession.getUuid();
+        try {
+            add(user);
+        } catch (ConstraintViolationException e) {
+            throw new UserExistsException(e);
+        }
     }
 
     public static byte[] hashPassWord(String passWord) {

@@ -44,6 +44,10 @@ public class Search {
         return new JSONObject(r);
     }
 
+    private static JSONObject processShowDetails(JSONObject response) {
+        // TODO: implement
+    }
+
     private static WebTarget getTarget(String endPoint) {
         return ClientBuilder.newClient()
                 .target(ApiValues.API_URL)
