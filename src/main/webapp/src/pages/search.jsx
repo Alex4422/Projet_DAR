@@ -3,7 +3,6 @@ import {withRouter} from 'react-router-dom'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
-import Typography from '@material-ui/core/Typography';
 import {SERVER_URL} from "./app";
 import ShowCard from "../components/showCard";
 
@@ -85,7 +84,6 @@ class SearchPage extends React.Component {
         if (request.readyState === 4 && request.status === 200) {
             let result = JSON.parse(request.responseText);
             this.setState({shows: result.results})
-            console.log(result)
         }
     }
 }
