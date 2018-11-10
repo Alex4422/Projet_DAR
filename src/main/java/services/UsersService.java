@@ -33,8 +33,8 @@ public class UsersService extends ServiceBase {
         return md.digest();
     }
 
-    public String login(String username, String hashedPassword) throws NonExistingUserException {
-        byte[] password = DatatypeConverter.parseHexBinary(hashedPassword);
+    public String login(String username, String hexHashedPassword) throws NonExistingUserException {
+        byte[] password = DatatypeConverter.parseHexBinary(hexHashedPassword);
         User user = getUser(username, password);
 
         if (user == null) {
@@ -58,6 +58,7 @@ public class UsersService extends ServiceBase {
 
     public void clear() {
         super.clear("User");
+        super.clear("UserSession");
     }
 
     private static MessageDigest getDigest() {

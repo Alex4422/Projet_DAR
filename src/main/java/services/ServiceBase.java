@@ -1,5 +1,6 @@
 package services;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -35,7 +36,8 @@ public abstract class ServiceBase {
     protected void clear(String tablename) {
         Session s = getSession();
         s.beginTransaction();
-        s.createQuery("DELETE FROM " + tablename);
+        Query q = s.createQuery("FROM " + tablename);
+        q.list().stream().forEach(s::delete);
         s.getTransaction().commit();
         s.close();
     }

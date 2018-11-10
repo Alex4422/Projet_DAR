@@ -1,4 +1,4 @@
 package services.errors;
 
-public class NonExistingUserException extends Exception {
+public class NonExistingUserException extends ServiceException {
 }

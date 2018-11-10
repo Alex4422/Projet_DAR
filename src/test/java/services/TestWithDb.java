@@ -20,7 +20,7 @@ public class TestWithDb {
 
     @After
     public void cleanTables() {
-        new UsersService(getSessionFactory());
+        new UsersService(getSessionFactory()).clear();
     }
 
     @AfterClass
