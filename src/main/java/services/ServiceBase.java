@@ -1,13 +1,19 @@
 package services;
 
-import launch.Main;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 import java.util.List;
 
-public class ServiceBase {
-    public static void add(List<Object> objects) {
-        Session s = Main.getFactory().openSession();
+public abstract class ServiceBase {
+    private SessionFactory sessionFactory;
+
+    public ServiceBase(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    public void add(List<Object> objects) {
+        Session s = getSession();
         s.beginTransaction();
 
         for (Object o: objects) {
@@ -18,11 +24,15 @@ public class ServiceBase {
         s.close();
     }
 
-    public static void add(Object o) {
-        Session s = Main.getFactory().openSession();
+    protected void add(Object o) {
+        Session s = getSession();
         s.beginTransaction();
         s.save(o);
         s.getTransaction().commit();
         s.close();
+    }
+
+    protected Session getSession() {
+        return sessionFactory.openSession();
     }
 }

@@ -1,5 +1,6 @@
 package servlet;
 
+import launch.Main;
 import org.json.JSONObject;
 import services.UsersService;
 import org.hibernate.exception.ConstraintViolationException;
@@ -39,7 +40,7 @@ public class Users extends HttpServlet {
         }
 
         try {
-            UsersService.addUser(username, password);
+            new UsersService(Main.getFactory()).addUser(username, password);
             res.setStatus(200);
             res.getOutputStream().write("OK".getBytes());
         } catch (UserExistsException e) {
