@@ -5,21 +5,28 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 import java.io.File;
 
 public class TestWithDb {
-    private SessionFactory factory;
+    private static SessionFactory factory;
 
-    @Before
-    public void init() {
+    @BeforeClass
+    public static void init() {
         factory = Main.initDb("jdbc:h2:./testDb");
     }
 
     @After
-    public void cleanUp() {
-        new UsersService(getSessionFactory());
+    public void cleanTables() {
+        new UsersService(getSessionFactory()).clear();
+    }
+
+    @AfterClass
+    public static void deleteDbFile() {
+        new File("testDb.mv.db").delete();
+        new File("testDb.mv.db").delete();
     }
 
     protected Session getSession() {

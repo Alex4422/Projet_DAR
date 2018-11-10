@@ -2,8 +2,12 @@ package services;
 
 import entities.User;
 import org.junit.Test;
+import services.errors.NonExistingUserException;
 import services.errors.UserExistsException;
 
+import javax.xml.bind.DatatypeConverter;
+
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.TestCase.assertEquals;
 
 public class UsersServiceTest extends TestWithDb {
@@ -22,5 +26,33 @@ public class UsersServiceTest extends TestWithDb {
         UsersService s = new UsersService(getSessionFactory());
         s.addUser("testUser", "password");
         s.addUser("testUser", "password");
+    }
+
+    @Test
+    public void loginAfterREgitration() throws UserExistsException, NonExistingUserException {
+        String username = "username";
+        String password = "password";
+        UsersService s = new UsersService(getSessionFactory());
+        s.addUser(username, password);
+        String hashedPawword = DatatypeConverter.printHexBinary(UsersService.hashPassWord(password));
+        String userToken = s.login(username, hashedPawword);
+        assertFalse(userToken.isEmpty());
+    }
+
+    @Test(expected = NonExistingUserException.class)
+    public void loginWithInvalidPassword() throws UserExistsException, NonExistingUserException {
+        String username = "username";
+        String password = "password";
+        UsersService s = new UsersService(getSessionFactory());
+        s.addUser(username, password);
+        String invalidPassword = DatatypeConverter.printHexBinary(UsersService.hashPassWord("invalidPassword"));
+        s.login(username, invalidPassword);
+    }
+
+    @Test(expected = NonExistingUserException.class)
+    public void loginNonExistingUser() throws NonExistingUserException {
+        UsersService s = new UsersService(getSessionFactory());
+        String hashedPawword = DatatypeConverter.printHexBinary(UsersService.hashPassWord("password"));
+        s.login("username", hashedPawword);
     }
 }
