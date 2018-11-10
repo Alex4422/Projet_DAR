@@ -10,3 +10,7 @@ src/main/webapp/node_modules/*
 localdb\.mv\.db
 
 localdb\.trace\.db
+
+testDb\.mv\.db
+
+testDb\.trace\.db

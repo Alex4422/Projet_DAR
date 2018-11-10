@@ -23,4 +23,11 @@ public class UsersServiceTest extends TestWithDb {
         s.addUser("testUser", "password");
         s.addUser("testUser", "password");
     }
+
+    @Test
+    public void loginAfterREgitration() {
+        String username = "username";
+        String password = "password";
+        UsersService s = new UsersService(getSessionFactory())
+    }
 }
