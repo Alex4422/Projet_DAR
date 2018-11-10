@@ -41,7 +41,16 @@ public class Search {
         String r = getTarget("/tv/" + showId)
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(String.class);
-        return new JSONObject(r);
+        return processShowDetails(new JSONObject(r));
+    }
+
+    private static JSONObject processShowDetails(JSONObject o) {
+        JSONObject result = new JSONObject();
+        result.put("name", o.getString("name"));
+        result.put("backdrop_path", o.getString("backdrop_path"));
+        result.put("overview", o.getString("overview"));
+        result.put("id", o.getInt("id"));
+        return result;
     }
 
     private static WebTarget getTarget(String endPoint) {

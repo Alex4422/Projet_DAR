@@ -8,6 +8,7 @@ import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -15,7 +16,7 @@ public class Main {
     private static SessionFactory factory;
 
     public static void main(String[] args) throws Exception {
-        initDb();
+        factory = initDb(App.dbUrl());
 
         String appDir = "src/main/webapp/";
         Tomcat tomcat = new Tomcat();
@@ -42,16 +43,16 @@ public class Main {
 
     public static SessionFactory getFactory() {
         if (factory == null) {
-            initDb();
+            factory = initDb(App.dbUrl());
         }
         return factory;
     }
 
-    private static void initDb() {
-        factory = new Configuration()
+    public static SessionFactory initDb(String dbUrl) {
+        return new Configuration()
                 .addAnnotatedClass(entities.User.class)
                 .addAnnotatedClass(entities.UserSession.class)
-                .setProperty("hibernate.connection.url", App.dbUrl())
+                .setProperty("hibernate.connection.url", dbUrl)
                 .setProperty("hibernate.connection.driver_class", App.dbClass())
                 .setProperty("hibernate.dialect", App.dbDialect())
                 .setProperty("hibernate.hbm2ddl.auto", "create")

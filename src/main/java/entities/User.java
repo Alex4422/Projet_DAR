@@ -8,16 +8,19 @@ import java.util.Arrays;
 @Table(name = "people")
 public class User implements Serializable {
     @Id
-    @Column(name = "user_id")
+    @Column()
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Column(name = "pseudo", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String username;
 
     @Basic
-    @Column(name = "password", nullable = false)
+    @Column(nullable = false)
     private byte[] password;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private UserSession session;
 
     public User() { }
 
@@ -49,6 +52,14 @@ public class User implements Serializable {
 
     public void setPassword(byte[] password) {
         this.password = password;
+    }
+
+    private void setSession(UserSession session) {
+        this.session = session;
+    }
+
+    public UserSession getSession() {
+        return session;
     }
 
     @Override
