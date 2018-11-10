@@ -56,6 +56,10 @@ public class UsersService extends ServiceBase {
         return result.isEmpty() ? null : (User) result.get(0);
     }
 
+    public void clear() {
+        super.clear("User");
+    }
+
     private static MessageDigest getDigest() {
         try {
             return MessageDigest.getInstance("SHA-256");

@@ -12,10 +12,9 @@ public class UsersServiceTest extends TestWithDb {
         String username = "username";
         String password = "password";
         UsersService s = new UsersService(getSessionFactory());
-        s.addUser("testUser", "password");
-        User u = s.getUser("testUser", UsersService.hashPassWord("password"));
-        assertEquals(u.getUsername(), "testUser");
-        assertEquals(u.getPassword(), UsersService.hashPassWord("password"));
+        s.addUser(username, password);
+        User u = s.getUser(username, UsersService.hashPassWord(password));
+        assertEquals(u.getUsername(), username);
     }
 
     @Test(expected=UserExistsException.class)

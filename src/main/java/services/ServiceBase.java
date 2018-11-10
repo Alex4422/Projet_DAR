@@ -32,6 +32,14 @@ public abstract class ServiceBase {
         s.close();
     }
 
+    protected void clear(String tablename) {
+        Session s = getSession();
+        s.beginTransaction();
+        s.createQuery("DELETE FROM " + tablename);
+        s.getTransaction().commit();
+        s.close();
+    }
+
     protected Session getSession() {
         return sessionFactory.openSession();
     }

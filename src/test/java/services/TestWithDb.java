@@ -19,9 +19,7 @@ public class TestWithDb {
 
     @After
     public void cleanUp() {
-        String queryStrinf = "delete from User";
-        Query q = getSession().createQuery(queryStrinf);
-        q.executeUpdate();
+        new UsersService(getSessionFactory());
     }
 
     protected Session getSession() {
