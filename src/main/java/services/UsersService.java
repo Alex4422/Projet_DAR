@@ -1,20 +1,15 @@
 package services;
 
 import entities.User;
-import entities.UserSession;
 import org.hibernate.Query;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
 import services.errors.NonExistingUserException;
-import services.errors.UnAuthenticatedUserException;
 import services.errors.UserExistsException;
 
 import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class UsersService extends ServiceBase {
@@ -45,10 +40,7 @@ public class UsersService extends ServiceBase {
             throw new NonExistingUserException();
         }
 
-        UserSession session = new UserSession(user);
-        add(session);
-
-        return session.getUuid();
+        return new UserSessionsService(getSessionFactory()).startSession(user);
     }
 
     public User getUser(String username, byte[] password) {
@@ -62,37 +54,8 @@ public class UsersService extends ServiceBase {
         return result.isEmpty() ? null : (User) result.get(0);
     }
 
-    public UserSession retrieveSession(String userToken) throws UnAuthenticatedUserException {
-        String queryString = "FROM UserSession U where U.uuid = :userToken";
-        beginTransaction();
-        Query query = getSession().createQuery(queryString);
-        query.setParameter("userToken", userToken);
-        List result = query.list();
-        getSession().getTransaction().commit();
-        if (result.isEmpty()) {
-            throw new UnAuthenticatedUserException();
-        }
-        return (UserSession) result.get(0);
-    }
-
-    public void refreshSession(String userToken) throws UnAuthenticatedUserException {
-        UserSession s = retrieveSession(userToken);
-        s.setDate(Calendar.getInstance().getTime());
-        update(s);
-    }
-
-    public void revokeSessions(Date lastValidDate) {
-        String queryString = "DELETE FROM UserSession U where U.date <= :oldestValidDate";
-        beginTransaction();
-        Query query = getSession().createQuery(queryString);
-        query.executeUpdate();
-        getSession().getTransaction().commit();
-        // TODO: add tests
-    }
-
     public void clear() {
-        super.clear("User");
-        super.clear("UserSession");
+        super.clearTable("User");
     }
 
     private static MessageDigest getDigest() {

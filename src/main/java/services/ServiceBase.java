@@ -39,7 +39,7 @@ public abstract class ServiceBase {
         getSession().getTransaction().commit();
     }
 
-    protected void clear(String tablename) {
+    protected void clearTable(String tablename) {
         beginTransaction();
         Query q = getSession().createQuery("FROM " + tablename);
         q.list().stream().forEach(getSession()::delete);
@@ -49,6 +49,8 @@ public abstract class ServiceBase {
     protected Session getSession() {
         return sessionFactory.getCurrentSession();
     }
+
+    protected SessionFactory getSessionFactory() { return sessionFactory; }
 
     protected void beginTransaction() {
         if (getSession().getTransaction().isActive()) {
