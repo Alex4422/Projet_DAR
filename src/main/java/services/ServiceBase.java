@@ -14,35 +14,46 @@ public abstract class ServiceBase {
     }
 
     public void add(List<Object> objects) {
-        Session s = getSession();
-        s.beginTransaction();
-
+        beginTransaction();
         for (Object o: objects) {
-            s.save(o);
+            getSession().save(o);
         }
-
-        s.getTransaction().commit();
-        s.close();
+        getSession().getTransaction().commit();
     }
 
     protected void add(Object o) {
-        Session s = getSession();
-        s.beginTransaction();
-        s.save(o);
-        s.getTransaction().commit();
-        s.close();
+        beginTransaction();
+        getSession().save(o);
+        getSession().getTransaction().commit();
+    }
+
+    protected void update(Object o) {
+        beginTransaction();
+        getSession().update(o);
+        getSession().getTransaction().commit();
+    }
+
+    protected void delete(Object o) {
+        beginTransaction();
+        getSession().delete(o);
+        getSession().getTransaction().commit();
     }
 
     protected void clear(String tablename) {
-        Session s = getSession();
-        s.beginTransaction();
-        Query q = s.createQuery("FROM " + tablename);
-        q.list().stream().forEach(s::delete);
-        s.getTransaction().commit();
-        s.close();
+        beginTransaction();
+        Query q = getSession().createQuery("FROM " + tablename);
+        q.list().stream().forEach(getSession()::delete);
+        getSession().getTransaction().commit();
     }
 
     protected Session getSession() {
-        return sessionFactory.openSession();
+        return sessionFactory.getCurrentSession();
+    }
+
+    protected void beginTransaction() {
+        if (getSession().getTransaction().isActive()) {
+            getSession().getTransaction().rollback();
+        }
+        getSession().beginTransaction();
     }
 }
