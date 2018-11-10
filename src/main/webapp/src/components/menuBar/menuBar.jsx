@@ -10,9 +10,22 @@ import Home from '@material-ui/icons/Home'
 
 import {LoginDialog, SignupDialog} from "./user_dialogs";
 import SearchField from "./search_field";
+import UserArea from "./user_area";
+import {AppContext} from "../../pages/app";
 
 class MenuBar extends React.Component {
     render() {
+        return (
+            <AppContext.Consumer>
+                {ctx => {
+                    return this.content(ctx)
+                }}
+            </AppContext.Consumer>
+
+        );
+    }
+
+    content(ctx) {
         let labelStyle = {
             marginLeft: 8,
             marginRight: 24
@@ -21,7 +34,7 @@ class MenuBar extends React.Component {
         let grow = {
             flexGrow: 1
         };
-
+        
         return (
             <AppBar position="static" color="default">
                 <Toolbar>
@@ -31,19 +44,17 @@ class MenuBar extends React.Component {
                     <Typography style={labelStyle} variant="h6">
                         SuperSeries
                     </Typography>
-                    <SearchField onSearch={(search) => {this.props.history.push("/search/" + search)}}/>
+                    <SearchField onSearch={(search) => {
+                        this.props.history.push("/search/" + search)
+                    }}/>
                     <div style={grow}/>
-                    <Button onClick={() => { this.loginDialog.openDialog() }}>
-                        Login
-                    </Button>
-                    <Button onClick={() => { this.signupDialog.openDialog() }}>
-                        Sign Up
-                    </Button>
+                    <UserArea context={ctx} onLogin={() => this.loginDialog.openDialog()}
+                              onSignup={() => this.signupDialog.openDialog()}/>
                 </Toolbar>
-                <LoginDialog onRef={(ref) => this.loginDialog = ref}/>
-                <SignupDialog onRef={(ref) => this.signupDialog = ref}/>
+                <LoginDialog context={ctx} onRef={(ref) => this.loginDialog = ref}/>
+                <SignupDialog context={ctx} onRef={(ref) => this.signupDialog = ref}/>
             </AppBar>
-        );
+        )
     }
 }
 

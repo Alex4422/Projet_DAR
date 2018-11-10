@@ -4,7 +4,11 @@ import {Route, NavLink, HashRouter} from "react-router-dom";
 import HomePage from './home';
 import RoutedMenuBar from '../components/menuBar/menuBar';
 import SearchPage from "./search";
+
 import ShowDetailsPage from "./show";
+
+import Profile from "./profile";
+
 
 const AppContext = React.createContext();
 
@@ -34,7 +38,11 @@ class App extends React.Component {
                         <div className="content" style={divStyle}>
                             <Route exact path="/" component={HomePage}/>
                             <Route path="/search/:searchValue" component={SearchPage}/>
+
                             <Route path="/showPage/:id" component={ShowDetailsPage}/>
+                            <!--to delete ? -->
+                            <Route path="/profile/" component={Profile}/>
+
                         </div>
                     </div>
                 </HashRouter>
