@@ -1,7 +1,6 @@
 package services;
 
 import launch.Main;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.After;
@@ -21,6 +20,7 @@ public class TestWithDb {
     @After
     public void cleanTables() {
         new UsersService(getSessionFactory()).clear();
+        new UserSessionsService(getSessionFactory()).clear();
     }
 
     @AfterClass

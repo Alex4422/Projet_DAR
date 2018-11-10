@@ -1,13 +1,19 @@
 package services;
 
 import entities.User;
+import entities.UserSession;
 import org.junit.Test;
 import services.errors.NonExistingUserException;
+import services.errors.UnAuthenticatedUserException;
 import services.errors.UserExistsException;
 
 import javax.xml.bind.DatatypeConverter;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertEquals;
 
 public class UsersServiceTest extends TestWithDb {

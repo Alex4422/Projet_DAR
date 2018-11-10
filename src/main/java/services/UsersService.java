@@ -1,7 +1,6 @@
 package services;
 
 import entities.User;
-import entities.UserSession;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
@@ -41,24 +40,22 @@ public class UsersService extends ServiceBase {
             throw new NonExistingUserException();
         }
 
-        UserSession session = new UserSession(user);
-        add(session);
-
-        return session.getUuid();
+        return new UserSessionsService(getSessionFactory()).startSession(user);
     }
 
     public User getUser(String username, byte[] password) {
         String queryString = "FROM User U WHERE U.username = :username AND U.password = :password";
+        beginTransaction();
         Query query = getSession().createQuery(queryString);
         query.setParameter("username", username);
         query.setParameter("password", password);
         List result = query.list();
+        getSession().getTransaction().commit();
         return result.isEmpty() ? null : (User) result.get(0);
     }
 
     public void clear() {
-        super.clear("User");
-        super.clear("UserSession");
+        super.clearTable("User");
     }
 
     private static MessageDigest getDigest() {
