@@ -52,6 +52,8 @@ public class Main {
         return new Configuration()
                 .addAnnotatedClass(entities.User.class)
                 .addAnnotatedClass(entities.UserSession.class)
+                .addAnnotatedClass(entities.Episode.class)
+                .addAnnotatedClass(entities.Watch.class)
                 .setProperty("hibernate.connection.url", dbUrl)
                 .setProperty("hibernate.connection.driver_class", App.dbClass())
                 .setProperty("hibernate.dialect", App.dbDialect())

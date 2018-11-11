@@ -15,7 +15,7 @@ public class UserSession implements Serializable {
 
     private String uuid = "";
 
-    @Column (name = "date", nullable = false)
+    @Column (nullable = false)
     private Date date;
 
     @OneToOne(fetch = FetchType.LAZY)
