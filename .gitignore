@@ -14,3 +14,5 @@ localdb\.trace\.db
 testDb\.mv\.db
 
 testDb\.trace\.db
+
+super_series\.iml

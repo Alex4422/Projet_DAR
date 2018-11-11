@@ -1,6 +1,9 @@
 import React from 'react';
 import {Route, NavLink, HashRouter} from "react-router-dom";
 
+
+
+
 import HomePage from './home';
 import RoutedMenuBar from '../components/menuBar/menuBar';
 import SearchPage from "./search";
