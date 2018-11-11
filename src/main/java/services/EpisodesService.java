@@ -18,14 +18,20 @@ public class EpisodesService extends ServiceBase {
         super.clearTable("Episode");
     }
 
-    public boolean addEpisodeIfNotExists(Integer showId, Integer seasonNumber, Integer episodeId) {
+    public Episode addEpisodeIfNotExists(Integer showId, Integer seasonNumber, Integer episodeId) {
         Episode newEpisode = new Episode(showId, seasonNumber, episodeId);
         try {
             add(newEpisode);
-            return true;
+            return newEpisode;
         } catch (ConstraintViolationException e) {
-            return false;
+            try {
+                return getEpisode(showId, seasonNumber, episodeId);
+            } catch (UnregisteredEpisodeException e1) {
+                System.out.println("Error while fetching an existing that existed...");
+                System.exit(1);
+            }
         }
+        return null;
     }
 
     public Episode getEpisode(Integer showId, Integer seasonNumber, Integer episodeId) throws UnregisteredEpisodeException {

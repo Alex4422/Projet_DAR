@@ -4,19 +4,16 @@ import entities.Episode;
 import org.junit.Test;
 import services.errors.UnregisteredEpisodeException;
 
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
-
 import static junit.framework.TestCase.assertEquals;
 
 public class EpisodesServiceTest extends TestWithDb {
     @Test
     public void addEpisode() {
         EpisodesService e = new EpisodesService(getSessionFactory());
-        boolean firstTry = e.addEpisodeIfNotExists(1100, 6, 1);
-        boolean secondTry = e.addEpisodeIfNotExists(1100, 6, 1);
-        assertTrue(firstTry);
-        assertFalse(secondTry);
+        Episode result = e.addEpisodeIfNotExists(1100, 6, 1);
+        assertEquals(1100, (int) result.getShowId());
+        assertEquals(6, (int) result.getSeasonNumber());
+        assertEquals(1, (int) result.getEpisodeId());
     }
 
     @Test

@@ -9,6 +9,7 @@ public class Watch {
     private Integer id;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
     private User user;
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -43,5 +44,14 @@ public class Watch {
 
     public void setEpisode(Episode episode) {
         this.episode = episode;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (! (other instanceof Watch)) {
+            return false;
+        }
+        Watch rhs = (Watch) other;
+        return id.equals(rhs.id) && user.equals(rhs.user) && episode.equals(rhs.episode);
     }
 }

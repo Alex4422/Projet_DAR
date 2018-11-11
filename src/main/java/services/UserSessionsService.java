@@ -38,6 +38,10 @@ public class UserSessionsService extends ServiceBase {
         return (UserSession) result.get(0);
     }
 
+    public User retrieveUser(String userToken) throws UnAuthenticatedUserException {
+        return retrieveSession(userToken).getUser();
+    }
+
     public void refreshSession(String userToken) throws UnAuthenticatedUserException {
         UserSession s = retrieveSession(userToken);
         s.setDate(Calendar.getInstance().getTime());

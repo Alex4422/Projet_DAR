@@ -59,4 +59,14 @@ public class Episode {
     public void setEpisodeId(Integer episodeId) {
         this.episodeId = episodeId;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (! (other instanceof Episode)) {
+            return false;
+        }
+        Episode rhs = (Episode) other;
+        return id.equals(rhs.id) && showId.equals(rhs.showId) && seasonNumber.equals(rhs.seasonNumber) &&
+                episodeId.equals(rhs.episodeId);
+    }
 }
