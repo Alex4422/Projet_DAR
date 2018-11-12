@@ -41,10 +41,11 @@ public class WatchService extends ServiceBase {
         return first(result);
     }
 
-    public Watch registerUserWatch(Integer userId, Integer showId, Integer seasonNumber, Integer episodeId)
-            throws NonExistingUserException
+    public Watch registerUserWatch(String userToken, Integer showId, Integer seasonNumber, Integer episodeId)
+            throws NonExistingUserException, UnAuthenticatedUserException
     {
-        User user = new UsersService(getSessionFactory()).getUser(userId);
+        User user = new UserSessionsService(getSessionFactory())
+                .retrieveUser(userToken);
         try {
             Watch previouswatch = getWatch(user.getId(), showId, seasonNumber, episodeId);
             if (previouswatch != null) {
@@ -59,7 +60,11 @@ public class WatchService extends ServiceBase {
         return userWatch;
     }
 
-    public void unregisterUserWatch(Watch w) {
+    public void unregisterUserWatch(String userToken, Integer showId, Integer seasonNumber, Integer episodeId)
+            throws UnAuthenticatedUserException, NonExistingUserException, UnregisteredEpisodeException
+    {
+        User u = new UserSessionsService(getSessionFactory()).retrieveUser(userToken);
+        Watch w = getWatch(u.getId(), showId, seasonNumber, episodeId);
         delete(w);
     }
 
