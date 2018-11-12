@@ -46,6 +46,14 @@ public abstract class ServiceBase {
         getSession().getTransaction().commit();
     }
 
+    protected <T> T first(List<T>  queryResults) {
+        if (queryResults.isEmpty()) {
+            return null;
+        } else {
+            return queryResults.get(0);
+        }
+    }
+
     protected Session getSession() {
         return sessionFactory.getCurrentSession();
     }

@@ -9,7 +9,6 @@ public class Watch {
     private Integer id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
     private User user;
 
     @ManyToOne(cascade = CascadeType.ALL)

@@ -19,7 +19,8 @@ public class UserSessionsServiceTest extends TestWithDb {
     public void retrieveUserSession() throws UserExistsException, NonExistingUserException, UnAuthenticatedUserException {
         UsersService s = new UsersService(getSessionFactory());
         s.addUser("username", "password");
-        String token = s.login("username", DatatypeConverter.printHexBinary(UsersService.hashPassWord("password")));
+        String token = s.login("username", DatatypeConverter.printHexBinary(UsersService.hashPassWord("password")))
+                .getUuid();
 
         UserSessionsService userSessionsService = new UserSessionsService(getSessionFactory());
         UserSession session = userSessionsService.retrieveSession(token);
@@ -39,7 +40,8 @@ public class UserSessionsServiceTest extends TestWithDb {
     public void refreshSession() throws UserExistsException, NonExistingUserException, InterruptedException, UnAuthenticatedUserException {
         UsersService s = new UsersService(getSessionFactory());
         s.addUser("username", "password");
-        String token = s.login("username", DatatypeConverter.printHexBinary(UsersService.hashPassWord("password")));
+        String token = s.login("username", DatatypeConverter.printHexBinary(UsersService.hashPassWord("password")))
+                .getUuid();
         Thread.sleep(2000);
 
         UserSessionsService userSessionsService = new UserSessionsService(getSessionFactory());
@@ -56,8 +58,10 @@ public class UserSessionsServiceTest extends TestWithDb {
         UsersService s = new UsersService(getSessionFactory());
         s.addUser("u1", "p1");
         s.addUser("u2", "p2");
-        String u1Token = s.login("u1", DatatypeConverter.printHexBinary(UsersService.hashPassWord("p1")));
-        String u2Token = s.login("u2", DatatypeConverter.printHexBinary(UsersService.hashPassWord("p2")));
+        String u1Token = s.login("u1", DatatypeConverter.printHexBinary(UsersService.hashPassWord("p1")))
+                .getUuid();
+        String u2Token = s.login("u2", DatatypeConverter.printHexBinary(UsersService.hashPassWord("p2")))
+                .getUuid();
 
         Thread.sleep(2000);
 

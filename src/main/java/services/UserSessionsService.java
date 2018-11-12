@@ -15,10 +15,10 @@ public class UserSessionsService extends ServiceBase {
         super(sessionFactory);
     }
 
-    public String startSession(User user) {
+    public UserSession startSession(User user) {
         UserSession session = new UserSession(user);
         add(session);
-        return session.getUuid();
+        return session;
     }
 
     public void clear() {
