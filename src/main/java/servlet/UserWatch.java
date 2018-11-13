@@ -4,6 +4,7 @@ import launch.Main;
 import org.json.JSONObject;
 import services.WatchService;
 import services.errors.NonExistingUserException;
+import services.errors.NonExistingUserWatchException;
 import services.errors.UnAuthenticatedUserException;
 import services.errors.UnregisteredEpisodeException;
 
@@ -49,10 +50,6 @@ public class UserWatch extends HttpServlet {
 
         try {
             new WatchService(Main.getFactory()).registerUserWatch(userToken, showId, seasonNumber, episodeId);
-        } catch (NonExistingUserException e) {
-            jsonResponse.put("error", "NonExisting user");
-            failWith(res, jsonResponse);
-            return;
         } catch (UnAuthenticatedUserException e) {
             jsonResponse.put("error", "Unauthenticated user");
             failWith(res, jsonResponse);
@@ -90,11 +87,11 @@ public class UserWatch extends HttpServlet {
         } catch (UnregisteredEpisodeException e) {
             jsonResponse.put("error", "Unregistered episode");
             failWith(res, jsonResponse);
-        } catch (NonExistingUserException e) {
-            jsonResponse.put("error", "Non existsing user");
-            failWith(res, jsonResponse);
         } catch (UnAuthenticatedUserException e) {
             jsonResponse.put("error", "Unauthenticated user");
+            failWith(res, jsonResponse);
+        } catch (NonExistingUserWatchException e) {
+            jsonResponse.put("error", e.getMessage());
             failWith(res, jsonResponse);
         }
 

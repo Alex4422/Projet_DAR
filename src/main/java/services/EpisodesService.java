@@ -1,6 +1,7 @@
 package services;
 
 import entities.Episode;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;

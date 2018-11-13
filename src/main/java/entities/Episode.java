@@ -1,6 +1,7 @@
 package entities;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(uniqueConstraints = {
@@ -19,6 +20,9 @@ public class Episode {
 
     @Column(nullable = false)
     private Integer episodeId;
+
+    @ManyToMany(mappedBy = "episodes")
+    Set<User> users;
 
     public Episode() {}
 
@@ -60,6 +64,14 @@ public class Episode {
         this.episodeId = episodeId;
     }
 
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
     @Override
     public boolean equals(Object other) {
         if (! (other instanceof Episode)) {
@@ -68,5 +80,10 @@ public class Episode {
         Episode rhs = (Episode) other;
         return id.equals(rhs.id) && showId.equals(rhs.showId) && seasonNumber.equals(rhs.seasonNumber) &&
                 episodeId.equals(rhs.episodeId);
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }

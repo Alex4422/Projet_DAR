@@ -1,13 +1,10 @@
 package services;
 
 import entities.Episode;
+import entities.User;
 import entities.UserSession;
-import entities.Watch;
 import org.junit.Test;
-import services.errors.NonExistingUserException;
-import services.errors.UnAuthenticatedUserException;
-import services.errors.UnregisteredEpisodeException;
-import services.errors.UserExistsException;
+import services.errors.*;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -18,46 +15,48 @@ import static junit.framework.TestCase.assertTrue;
 
 public class WatchServiceTest extends TestWithDb {
     @Test
-    public void registerUSerWatch() throws UserExistsException, NonExistingUserException, UnAuthenticatedUserException {
+    public void registerUSerWatchWithNewEpisode() throws UserExistsException, NonExistingUserException, UnAuthenticatedUserException {
         WatchService watchService = new WatchService(getSessionFactory());
         UserSession userSession = registerAndLoginUser();
-        Watch w = watchService.registerUserWatch(userSession.getUuid(), 1100, 6, 1);
-        assertEquals(1100, (int) w.getEpisode().getShowId());
-        assertEquals(6, (int) w.getEpisode().getSeasonNumber());
-        assertEquals(1, (int) w.getEpisode().getEpisodeId());
-    }
+        User user = userSession.getUser();
+        watchService.registerUserWatch(userSession.getUuid(), 1100, 6, 1);
 
-    @Test
-    public void listWatchedEpisodes() throws UserExistsException, NonExistingUserException, UnAuthenticatedUserException {
-        WatchService watchService = new WatchService(getSessionFactory());
-        UserSession userSession = registerAndLoginUser();
+        assertEquals(1, user.getEpisodes().size());
 
-        Watch w1 = watchService.registerUserWatch(userSession.getUuid(), 1100, 6, 1);
-        Watch w2 = watchService.registerUserWatch(userSession.getUuid(), 1200, 5, 2);
-
-        List<Episode> watchedEpisodes = watchService.listWatchedEpisodes(userSession.getUser());
-        assertTrue(watchedEpisodes.contains(w1.getEpisode()));
-        assertTrue(watchedEpisodes.contains(w2.getEpisode()));
-        assertEquals(2, watchedEpisodes.size());
+        Episode episode = user.getEpisodes().iterator().next();
+        assertEquals(1100, (int) episode.getShowId());
+        assertEquals(6, (int) episode.getSeasonNumber());
+        assertEquals(1, (int) episode.getEpisodeId());
     }
 
     @Test
     public void unregisterWatch() throws UserExistsException, NonExistingUserException, UnAuthenticatedUserException,
-            UnregisteredEpisodeException
+            UnregisteredEpisodeException, NonExistingUserWatchException {
+        WatchService watchService = new WatchService(getSessionFactory());
+        UserSession userSession = registerAndLoginUser();
+        User user = userSession.getUser();
+        EpisodesService episodesService = new EpisodesService(getSessionFactory());
+
+        Episode e1 = episodesService.addEpisodeIfNotExists(1100, 6, 1);
+        Episode e2 = episodesService.addEpisodeIfNotExists(1200, 5, 2);
+        watchService.registerUserWatch(userSession.getUuid(), e1.getShowId(), e1.getSeasonNumber(), e1.getEpisodeId());
+        watchService.registerUserWatch(userSession.getUuid(), e2.getShowId(), e2.getSeasonNumber(), e2.getEpisodeId());
+
+        watchService.unregisterUserWatch(userSession.getUuid(), e2.getShowId(),
+                                                                e2.getSeasonNumber(),
+                                                                e2.getEpisodeId());
+        assertTrue(user.getEpisodes().contains(e1));
+        assertEquals(1, user.getEpisodes().size());
+    }
+
+    @Test(expected = UnregisteredEpisodeException.class)
+    public void unregisterWatchWithUnregisteredEpisode() throws UserExistsException,
+            NonExistingUserException, NonExistingUserWatchException, UnAuthenticatedUserException, UnregisteredEpisodeException
     {
         WatchService watchService = new WatchService(getSessionFactory());
         UserSession userSession = registerAndLoginUser();
 
-        Watch w1 = watchService.registerUserWatch(userSession.getUuid(), 1100, 6, 1);
-        Watch w2 = watchService.registerUserWatch(userSession.getUuid(), 1200, 5, 2);
-
-        watchService.unregisterUserWatch(userSession.getUuid(), w2.getEpisode().getShowId(),
-                                                                w2.getEpisode().getSeasonNumber(),
-                                                                w2.getEpisode().getEpisodeId());
-
-        List<Episode> watchedEpisodes = watchService.listWatchedEpisodes(userSession.getUser());
-        assertTrue(watchedEpisodes.contains(w1.getEpisode()));
-        assertEquals(1, watchedEpisodes.size());
+        watchService.unregisterUserWatch(userSession.getUuid(), 1100, 6, 1);
     }
 
     private UserSession registerAndLoginUser() throws UserExistsException, NonExistingUserException {

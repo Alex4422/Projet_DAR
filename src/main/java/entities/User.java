@@ -3,6 +3,8 @@ package entities;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "people")
@@ -10,7 +12,7 @@ public class User implements Serializable {
     @Id
     @Column()
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Integer userId;
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -22,20 +24,28 @@ public class User implements Serializable {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private UserSession session;
 
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @JoinTable(
+            name = "User_Episodes",
+            joinColumns = { @ JoinColumn(name = "userId") },
+            inverseJoinColumns = { @JoinColumn(name = "id") }
+    )
+    Set<Episode> episodes = new HashSet<>();
+
     public User() { }
 
     public User(String username, byte[] password) {
-        id = null;
+        userId = null;
         this.username = username;
         this.password = password;
     }
 
     public Integer getId() {
-        return id;
+        return userId;
     }
 
     public void setId(Integer id) {
-        this.id = id;
+        this.userId = id;
     }
 
     public String getUsername() {
@@ -60,6 +70,14 @@ public class User implements Serializable {
 
     public UserSession getSession() {
         return session;
+    }
+
+    public Set<Episode> getEpisodes() {
+        return episodes;
+    }
+
+    public void setEpisodes(Set<Episode> episodes) {
+        this.episodes = episodes;
     }
 
     @Override
