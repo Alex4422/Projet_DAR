@@ -78,12 +78,12 @@ public class Episode {
             return false;
         }
         Episode rhs = (Episode) other;
-        return id.equals(rhs.id) && showId.equals(rhs.showId) && seasonNumber.equals(rhs.seasonNumber) &&
+        return showId.equals(rhs.showId) && seasonNumber.equals(rhs.seasonNumber) &&
                 episodeId.equals(rhs.episodeId);
     }
 
     @Override
     public int hashCode() {
-        return id;
+        return showId + seasonNumber + episodeId;
     }
 }

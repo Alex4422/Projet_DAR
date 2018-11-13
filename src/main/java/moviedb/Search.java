@@ -1,5 +1,7 @@
 package moviedb;
 
+import entities.Episode;
+import entities.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -48,11 +50,20 @@ public class Search {
         return filterFields(Arrays.asList("name", "backdrop_path", "overview", "id"), o);
     }
 
-    private static JSONObject filterFields(List<String> fields, JSONObject o) {
-        JSONObject result = new JSONObject();
-        for (String field: fields) {
-            result.put(field, o.get(field));
+    public static JSONObject seasonDetails(String showId, String seasonNumber, User user) {
+        JSONObject result = seasonDetails(showId, seasonNumber);
+        JSONArray episodes = new JSONArray();
+        for (Object e: result.getJSONArray("episodes")) {
+            if (e instanceof JSONObject) {
+                JSONObject jsonEpisode = (JSONObject) e;
+                Episode episode = new Episode(jsonEpisode.getInt("show_id"),
+                                        jsonEpisode.getInt("season_number"),
+                                        jsonEpisode.getInt("id"));
+                jsonEpisode.put("watched", user.getEpisodes().contains(episode));
+                episodes.put(jsonEpisode);
+            }
         }
+        result.put("episodes", episodes);
         return result;
     }
 
@@ -61,7 +72,35 @@ public class Search {
         String r = getTarget(endpoint)
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(String.class);
-        return new JSONObject(r);
+        return processSeasonDetails(new JSONObject(r));
+    }
+
+    private static JSONObject processSeasonDetails(JSONObject season) {
+        JSONObject result = filterFields(Arrays.asList("season_number", "name"), season);
+        JSONArray episodes = new JSONArray();
+        for (Object e: season.getJSONArray("episodes")) {
+            if (e instanceof JSONObject) {
+                episodes.put(processEpisode((JSONObject) e));
+            }
+        }
+        result.put("episodes", episodes);
+        return result;
+    }
+
+    private static JSONObject processEpisode(JSONObject episode) {
+        JSONObject result = filterFields(
+                Arrays.asList("name", "id", "overview","episode_number", "season_number", "show_id"),
+                episode);
+        result.put("watched", false);
+        return result;
+    }
+
+    private static JSONObject filterFields(List<String> fields, JSONObject o) {
+        JSONObject result = new JSONObject();
+        for (String field: fields) {
+            result.put(field, o.get(field));
+        }
+        return result;
     }
 
     private static WebTarget getTarget(String endPoint) {
