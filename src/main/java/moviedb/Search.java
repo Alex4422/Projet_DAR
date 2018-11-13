@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Search {
+
     public static JSONObject tvShow(String searchValue) {
         String r = getTarget("/search/tv")
                 .queryParam("query", searchValue)
@@ -47,20 +48,20 @@ public class Search {
         return filterFields(Arrays.asList("name", "backdrop_path", "overview", "id"), o);
     }
 
-    public static JSONObject seasonDetails(String showId, String seasonNumber) {
-        String endpoint = String.format("/tv/%s/season/%s", showId, seasonNumber);
-        String r = getTarget(endpoint)
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .get(String.class);
-        return new JSONObject(r);
-    }
-
     private static JSONObject filterFields(List<String> fields, JSONObject o) {
         JSONObject result = new JSONObject();
         for (String field: fields) {
             result.put(field, o.get(field));
         }
         return result;
+    }
+
+    public static JSONObject seasonDetails(String showId, String seasonNumber) {
+        String endpoint = String.format("/tv/%s/season/%s", showId, seasonNumber);
+        String r = getTarget(endpoint)
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .get(String.class);
+        return new JSONObject(r);
     }
 
     private static WebTarget getTarget(String endPoint) {
