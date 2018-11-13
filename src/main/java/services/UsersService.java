@@ -1,8 +1,11 @@
 package services;
 
 import entities.User;
+import entities.UserSession;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
 import services.errors.NonExistingUserException;
 import services.errors.UserExistsException;
@@ -15,6 +18,20 @@ import java.util.List;
 public class UsersService extends ServiceBase {
     public UsersService(SessionFactory sessionFactory) {
         super(sessionFactory);
+    }
+
+    public User getUser(Integer userId) throws NonExistingUserException {
+        beginTransaction();
+        Criteria criteria = getSession().createCriteria(User.class)
+                .add(Restrictions.eq("id", userId));
+        List<User> result = criteria.list();
+        getSession().getTransaction().commit();
+
+        if (result.isEmpty()) {
+            throw new NonExistingUserException();
+        }
+
+        return first(result);
     }
 
     public void addUser(String username, String passWord) throws UserExistsException {
@@ -32,7 +49,7 @@ public class UsersService extends ServiceBase {
         return md.digest();
     }
 
-    public String login(String username, String hexHashedPassword) throws NonExistingUserException {
+    public UserSession login(String username, String hexHashedPassword) throws NonExistingUserException {
         byte[] password = DatatypeConverter.parseHexBinary(hexHashedPassword);
         User user = getUser(username, password);
 
@@ -43,15 +60,20 @@ public class UsersService extends ServiceBase {
         return new UserSessionsService(getSessionFactory()).startSession(user);
     }
 
-    public User getUser(String username, byte[] password) {
+    public User getUser(String username, byte[] password) throws NonExistingUserException {
         String queryString = "FROM User U WHERE U.username = :username AND U.password = :password";
         beginTransaction();
         Query query = getSession().createQuery(queryString);
         query.setParameter("username", username);
         query.setParameter("password", password);
-        List result = query.list();
+        List<User> result = query.list();
         getSession().getTransaction().commit();
-        return result.isEmpty() ? null : (User) result.get(0);
+
+        if (result.isEmpty()) {
+            throw new NonExistingUserException();
+        }
+
+        return first(result);
     }
 
     public void clear() {

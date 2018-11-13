@@ -20,6 +20,7 @@ public class TestWithDb {
     @After
     public void cleanTables() {
         new UsersService(getSessionFactory()).clear();
+        new EpisodesService(getSessionFactory()).clear();
         new UserSessionsService(getSessionFactory()).clear();
     }
 

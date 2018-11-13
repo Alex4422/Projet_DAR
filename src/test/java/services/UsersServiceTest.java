@@ -1,24 +1,18 @@
 package services;
 
 import entities.User;
-import entities.UserSession;
 import org.junit.Test;
 import services.errors.NonExistingUserException;
-import services.errors.UnAuthenticatedUserException;
 import services.errors.UserExistsException;
 
 import javax.xml.bind.DatatypeConverter;
 
-import java.util.Calendar;
-import java.util.Date;
-
 import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertEquals;
 
 public class UsersServiceTest extends TestWithDb {
     @Test
-    public void registerNewUser() throws UserExistsException {
+    public void registerNewUser() throws UserExistsException, NonExistingUserException {
         String username = "username";
         String password = "password";
         UsersService s = new UsersService(getSessionFactory());
@@ -41,7 +35,8 @@ public class UsersServiceTest extends TestWithDb {
         UsersService s = new UsersService(getSessionFactory());
         s.addUser(username, password);
         String hashedPawword = DatatypeConverter.printHexBinary(UsersService.hashPassWord(password));
-        String userToken = s.login(username, hashedPawword);
+        String userToken = s.login(username, hashedPawword)
+                .getUuid();
         assertFalse(userToken.isEmpty());
     }
 
