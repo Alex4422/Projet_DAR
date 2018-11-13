@@ -9,7 +9,9 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Search {
 
@@ -47,7 +49,12 @@ public class Search {
     }
 
     private static JSONObject processShowDetails(JSONObject o) {
-        return filterFields(Arrays.asList("name", "backdrop_path", "overview", "id"), o);
+        JSONObject result = filterFields(Arrays.asList("name", "backdrop_path", "overview", "id"), o);
+        List<Integer> seasons = o.getJSONArray("seasons").toList().stream()
+                .map(s -> Integer.parseInt(((HashMap)s).get("season_number").toString()))
+                .collect(Collectors.toList());
+        result.put("seasons", seasons);
+        return result;
     }
 
     public static JSONObject seasonDetails(String showId, String seasonNumber, User user) {
