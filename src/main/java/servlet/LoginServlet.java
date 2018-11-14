@@ -7,11 +7,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import entities.UserSession;
 import launch.Main;
 import org.json.JSONObject;
 import services.UsersService;
 import services.errors.NonExistingUserException;
 import static servlet.Util.failWith;
+import static servlet.Util.successWith;
 
 
 @WebServlet(
@@ -39,9 +41,9 @@ public class LoginServlet extends HttpServlet {
         }
 
         try {
-            new UsersService(Main.getFactory()).login(username,password);
-            response.setStatus(200);
-            response.getOutputStream().write("OK".getBytes());
+            UserSession newSession = new UsersService(Main.getFactory()).login(username,password);
+            jsonResponse.put("userToken", newSession.getUuid());
+            successWith(response, jsonResponse);
         } catch (NonExistingUserException e) {
             e.printStackTrace();
             jsonResponse.put("error", "A user with username <" + username + "> do not exist");

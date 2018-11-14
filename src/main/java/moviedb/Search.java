@@ -1,9 +1,12 @@
 package moviedb;
 
 import entities.Episode;
+import entities.Rating;
 import entities.User;
+import launch.Main;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import services.RatingService;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -41,10 +44,25 @@ public class Search {
         return processedShows;
     }
 
+    public static JSONObject showDetails(String showId, User user) {
+        JSONObject showDetails = showDetails(showId);
+        Rating rating = new RatingService(Main.getFactory()).getRating(user, Integer.parseInt(showId));
+        if (rating != null) {
+            showDetails.put("rating", rating.getRating());
+        }
+        // TODO: add average rating
+        return showDetails;
+    }
+
     public static JSONObject showDetails(String showId) {
         String r = getTarget("/tv/" + showId)
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(String.class);
+        JSONObject result = new JSONObject(r);
+        Double rating = new RatingService(Main.getFactory()).getAverageRating(Integer.parseInt(showId));
+        if (rating != null) {
+            result.put("averageRating", rating);
+        }
         return processShowDetails(new JSONObject(r));
     }
 

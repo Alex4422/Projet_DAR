@@ -2,6 +2,7 @@ package servlets;
 
 import entities.User;
 import launch.Main;
+import org.json.JSONObject;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -43,13 +44,14 @@ public class Users extends ServletTest {
                 .post(null);
     }
 
-    public static void loginTestUser() {
-        ClientBuilder.newClient()
+    public static JSONObject loginTestUser() {
+        String response = ClientBuilder.newClient()
                 .target("http://localhost:8080")
                 .path("/api/v1/login")
                 .queryParam("username", USERNAME)
                 .queryParam("password", DatatypeConverter.printHexBinary(UsersService.hashPassWord(PASSWORD)))
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(String.class);
+        return new JSONObject(response);
     }
 }

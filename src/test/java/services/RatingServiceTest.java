@@ -32,4 +32,18 @@ public class RatingServiceTest extends TestWithDb {
         Rating finalRating = ratingService.getRating(userSession.getUser(), 1100);
         assertEquals(2, (int) finalRating.getRating());
     }
+
+    @Test
+    public void averageShowRating() throws UserExistsException, NonExistingUserException, InvalidRatingException, UnAuthenticatedUserException {
+        UserSession u1 = registerAndLoginUser("u1", "p");
+        UserSession u2 = registerAndLoginUser("u2", "p");
+        RatingService ratingService = new RatingService(getSessionFactory());
+
+        ratingService.rateShow(u1.getUuid(), 1100, 10);
+        ratingService.rateShow(u2.getUuid(), 1100, 5);
+
+        Double averageRating = ratingService.getAverageRating(1100);
+
+        assertEquals(7.5, averageRating);
+    }
 }

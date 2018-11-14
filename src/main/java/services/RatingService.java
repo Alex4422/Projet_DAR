@@ -41,4 +41,22 @@ public class RatingService extends ServiceBase {
         getSession().getTransaction().commit();
         return first(result);
     }
+
+    public Double getAverageRating(Integer showId) {
+        beginTransaction();
+        Criteria criteria = getSession().createCriteria(Rating.class);
+        criteria.add(Restrictions.eq("showId", showId));
+        List<Rating> result = criteria.list();
+        getSession().getTransaction().commit();
+
+        if (result.isEmpty()) {
+            return null;
+        }
+
+        Double total = 0.0;
+        for (Rating r: result) {
+            total += r.getRating();
+        }
+        return total / result.size();
+    }
 }
