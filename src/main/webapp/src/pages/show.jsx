@@ -3,6 +3,14 @@ import Typography from '@material-ui/core/Typography';
 import {withRouter} from 'react-router-dom'
 import {SERVER_URL} from "./app";
 import SeasonDetails from '../components/seasonDetails';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import Tv from '@material-ui/icons/Tv';
+import Collapse from "@material-ui/core/Collapse/Collapse";
 
 var request;
 
@@ -26,13 +34,11 @@ class ShowDetailsPage extends React.Component {
             name: "",
             backdrop: "",
             openSeasons: false,
-            openSeason: false,
-            openEps: false,
-            openEp: false,
         }
     }
     render() {
         return (
+
             <div style={rootStyle}>
                 <div style={this.titleBackgroundStyle()}>
                     <div style={titleStyle}>
@@ -44,8 +50,33 @@ class ShowDetailsPage extends React.Component {
                         </Typography>
                     </div>
                 </div>
-                <SeasonDetails/>
+
+                <div style={this.listStyle()}>
+                    <List component="nav">
+                        <ListItem button onClick={() => {
+                            this.setState(state => ({ openSeasons: !this.state.openSeasons }))}
+                        }>
+                            <ListItemIcon style={{color: '#000'}}>
+                                <Tv />
+                            </ListItemIcon>
+                            <ListItemText inset primary={
+                                <Typography style={this.listTitleSeasonStyle()}>Seasons</Typography>
+                            }/>
+                            {this.state.openSeasons ? <ExpandLess /> : <ExpandMore />}
+                        </ListItem>
+
+                        <div style={this.nestedSeasonStyle()}>
+                            <Collapse in={this.state.openSeasons} timeout="auto" unmountOnExit>
+                               { /*this.state.seasons.map((seasonNumber) => (  <SeasonDetails showId={this.props.match.params.id} seasonNumber={seasonNumber}/> ))*/
+                                   <SeasonDetails showId={this.props.match.params.id} seasonNumber={this.state.seasons}/>
+                               }
+                            </Collapse>
+                        </div>
+                    </List>
+
+                </div>
             </div>
+
         );
     }
 
@@ -57,6 +88,26 @@ class ShowDetailsPage extends React.Component {
             minHeight: HEADER_HEIGHT,
             backgroundSize: 'cover',
             backgroundImage: "url(https://image.tmdb.org/t/p/w1280/" + this.state.backdrop + ")",
+        }
+    }
+
+    listStyle() {
+        return {
+            display: 'flex',
+            flexDirection: 'row',
+        }
+    }
+
+    listTitleSeasonStyle() {
+        return {
+            color: '#000',
+            fontSize: '150%',
+        }
+    }
+
+    nestedSeasonStyle() {
+        return {
+            paddingLeft: '5%',
         }
     }
 
@@ -77,7 +128,8 @@ class ShowDetailsPage extends React.Component {
             this.setState({
                 name: result.name,
                 backdrop: result.backdrop_path,
-                overview: result.overview
+                overview: result.overview,
+                seasons: result.seasons
             })
         }
     }
