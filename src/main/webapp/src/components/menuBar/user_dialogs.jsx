@@ -20,8 +20,6 @@ const textFieldStyle = {
     marginBottom: 8,
 }
 
-var request;
-
 class UserDialogBase extends React.Component {
     constructor(props) {
         super(props)
@@ -209,18 +207,6 @@ class SignupDialog extends UserDialogBase {
             </Dialog>
         );
     }
-
-    fetchData() {
-        this.setState({shows: []})
-        request = new XMLHttpRequest();
-        request.open("GET", SERVER_URL + "/search/show?searchValue=" + this.props.match.params.searchValue, true);
-        request.send(null);
-        request.addEventListener("readystatechange", this.processRequest, false);
-    }
-
-
-
-
 }
 
 export {LoginDialog, SignupDialog}
