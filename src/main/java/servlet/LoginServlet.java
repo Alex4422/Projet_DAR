@@ -41,7 +41,7 @@ public class LoginServlet extends HttpServlet {
         try {
             new UsersService(Main.getFactory()).login(username,password);
             response.setStatus(200);
-            response.getOutputStream().write("OK".getBytes());
+            response.getOutputStream().write("OK! the login has been found ! " .getBytes());
         } catch (NonExistingUserException e) {
             e.printStackTrace();
             jsonResponse.put("error", "A user with username <" + username + "> do not exist");
