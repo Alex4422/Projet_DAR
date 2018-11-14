@@ -1,6 +1,7 @@
 package servlet;
 
 import entities.User;
+import entities.UserSession;
 import launch.Main;
 import moviedb.Search;
 import org.json.JSONObject;
@@ -52,7 +53,9 @@ public class SeasonDetails extends HttpServlet {
         try {
             JSONObject result;
             if (userToken != null && !userToken.isEmpty()) {
-                User user = new UserSessionsService(Main.getFactory()).retrieveUser(userToken);
+                UserSessionsService sessionsService = new UserSessionsService(Main.getFactory());
+                sessionsService.refreshSession(userToken);
+                User user = sessionsService.retrieveUser(userToken);
                 result = Search.seasonDetails(showId, seasonNumber, user);
             } else {
                 result = Search.seasonDetails(showId, seasonNumber);
