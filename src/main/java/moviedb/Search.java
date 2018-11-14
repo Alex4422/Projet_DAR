@@ -50,7 +50,6 @@ public class Search {
         if (rating != null) {
             showDetails.put("rating", rating.getRating());
         }
-        // TODO: add average rating
         return showDetails;
     }
 
