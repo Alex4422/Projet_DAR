@@ -12,6 +12,7 @@ import InfoOutlined from '@material-ui/icons/InfoOutlined';
 import Collapse from '@material-ui/core/Collapse';
 import Checkbox from '@material-ui/core/Checkbox';
 import {SERVER_URL} from "../pages/app";
+import EpisodeDetails from "./episodeDetails";
 
 var request;
 
@@ -20,7 +21,6 @@ class SeasonDetails extends React.Component {
         super(props);
         this.state = {
             name: "",
-            openSeasons: false,
             openSeason: false,
             openEps: false,
             openEp: false,
@@ -29,99 +29,28 @@ class SeasonDetails extends React.Component {
 
     render() {
         return (
-            <div style={this.listStyle()}>
-                <List component="nav">
-                    <ListItem button onClick={() => {
-                        this.setState(state => ({ openSeasons: !this.state.openSeasons }))}
-                    }>
-                        <ListItemIcon style={{color: '#000'}}>
-                            <Tv />
-                        </ListItemIcon>
-                        <ListItemText inset primary={
-                            <Typography style={this.listTitleSeasonStyle()}>Seasons</Typography>
-                        }/>
-                        {this.state.openSeasons ? <ExpandLess /> : <ExpandMore />}
-                        </ListItem>
 
-                    <div style={this.nestedSeasonStyle()}>
-                        <Collapse in={this.state.openSeasons} timeout="auto" unmountOnExit>
-                            <List component="div" disablePadding>
-                                <ListItem button onClick={() => {
-                                    this.setState(state => ({ openSeason: !this.state.openSeason }))}
-                                }>
-                                    <ListItemIcon style={{color: '#000'}}>
-                                        <Tv />
-                                    </ListItemIcon>
-                                    <ListItemText inset primary={
-                                        <Typography style={this.listTitleSeasonStyle()}>Season 1</Typography>
-                                    }/>
-                                    {this.state.openSeason ? <ExpandLess /> : <ExpandMore />}
-                                    </ListItem>
+            <List component="div" disablePadding>
+                <ListItem button onClick={() => {
+                    this.setState(state => ({ openSeason: !this.state.openSeason }))}
+                }>
+                    <ListItemIcon style={{color: '#000'}}>
+                        <Tv />
+                    </ListItemIcon>
+                    <ListItemText inset primary={
+                        <Typography style={this.listTitleSeasonStyle()}>Season {this.props.seasonNumber}</Typography>
+                    }/>
+                    {this.state.openSeason ? <ExpandLess /> : <ExpandMore />}
+                    </ListItem>
 
-                                <div style={this.nestedEpsStyle()}>
-                                    <Collapse in={this.state.openSeason} timeout="auto" unmountOnExit>
-                                        <List component="div" disablePadding>
-                                            <ListItem button onClick={() => {
-                                                this.setState(state => ({ openEps: !this.state.openEps }))}
-                                            }>
-                                                <ListItemIcon style={{color: '#000'}}>
-                                                    <LiveTv />
-                                                </ListItemIcon>
-                                                <ListItemText inset primary={
-                                                    <Typography style={this.listTitleEpStyle()}>Episodes</Typography>
-                                                }/>
-                                                {this.state.openEps ? <ExpandLess /> : <ExpandMore />}
-                                                </ListItem>
+                <div style={this.nestedEpsStyle()}>
+                    <Collapse in={this.state.openSeason} timeout="auto" unmountOnExit>
+                        <EpisodeDetails/>
+                    </Collapse>
+                </div>
+            </List>
 
-                                            <div style={this.nestedEpStyle()}>
-                                                <Collapse in={this.state.openEps} timeout="auto" unmountOnExit>
-                                                    <List component="div" disablePadding>
-                                                        <ListItem button onClick={() => {
-                                                            this.setState(state => ({ openEp: !this.state.openEp }))}
-                                                        }>
-                                                            <ListItemIcon style={{color: '#000'}}>
-                                                                <LiveTv />
-                                                            </ListItemIcon>
-                                                            <ListItemText inset primary={
-                                                                <Typography style={this.listTitleEpStyle()}>Episode 1</Typography>
-                                                            }/>
-                                                            {this.state.openEp ? <ExpandLess /> : <ExpandMore />}
-                                                            </ListItem>
-
-                                                        <div style={this.nestedEpDescrStyle()}>
-                                                            <Collapse in={this.state.openEp} timeout="auto" unmountOnExit>
-                                                                <List component="div" disablePadding>
-                                                                    <ListItem button>
-                                                                        <ListItemIcon style={{color: '#000'}}>
-                                                                            <InfoOutlined />
-                                                                        </ListItemIcon>
-                                                                        <ListItemText inset primary={
-                                                                            <Typography style={this.listTitleDescrStyle()}>Description</Typography>
-                                                                        }/>
-                                                                    </ListItem>
-
-                                                                </List>
-                                                            </Collapse>
-                                                        </div>
-                                                    </List>
-                                                </Collapse>
-                                            </div>
-                                        </List>
-                                    </Collapse>
-                                </div>
-                            </List>
-                        </Collapse>
-                    </div>
-                </List>
-            </div>
         );
-    }
-
-    listStyle() {
-        return {
-            display: 'flex',
-            flexDirection: 'row',
-        }
     }
 
     listTitleSeasonStyle() {
@@ -131,41 +60,9 @@ class SeasonDetails extends React.Component {
         }
     }
 
-    listTitleEpStyle() {
-        return {
-            color: '#000',
-            fontSize: '120%',
-        }
-    }
-
-    listTitleDescrStyle() {
-        return {
-            color: '#000',
-            fontSize: '100%',
-        }
-    }
-
-    nestedSeasonStyle() {
-        return {
-            paddingLeft: '5%',
-        }
-    }
-
     nestedEpsStyle() {
         return {
             paddingLeft: '8%',
-        }
-    }
-
-    nestedEpStyle() {
-        return {
-            paddingLeft: '11%',
-        }
-    }
-
-    nestedEpDescrStyle() {
-        return {
-            paddingLeft: '14%',
         }
     }
 
