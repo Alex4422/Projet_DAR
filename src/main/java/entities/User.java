@@ -88,6 +88,6 @@ public class User implements Serializable {
 
         User rhs = (User) other;
 
-        return rhs.username.equals(username) && Arrays.equals(rhs.password, password);
+        return rhs.getUsername().equals(getUsername()) && Arrays.equals(rhs.getPassword(), getPassword());
     }
 }

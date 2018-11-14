@@ -3,6 +3,7 @@ package entities;
 import services.errors.InvalidRatingException;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Rating {
@@ -23,10 +24,10 @@ public class Rating {
 
     public Rating() { }
 
-    public Rating(Integer showId, Integer rating, User user) {
+    public Rating(User user, Integer showId, Integer rating) throws InvalidRatingException {
         this.showId = showId;
-        this.rating = rating;
         this.user = user;
+        setRating(rating);
     }
 
     public Integer getId() {
@@ -62,5 +63,20 @@ public class Rating {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Rating)) return false;
+        Rating rating1 = (Rating) o;
+        return Objects.equals(showId, rating1.showId) &&
+                Objects.equals(rating, rating1.rating) &&
+                Objects.equals(user, rating1.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(showId, rating, user);
     }
 }
