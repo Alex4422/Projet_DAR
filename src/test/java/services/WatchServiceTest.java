@@ -58,10 +58,4 @@ public class WatchServiceTest extends TestWithDb {
 
         watchService.unregisterUserWatch(userSession.getUuid(), 1100, 6, 1);
     }
-
-    private UserSession registerAndLoginUser() throws UserExistsException, NonExistingUserException {
-        UsersService usersService = new UsersService(getSessionFactory());
-        usersService.addUser("u", "p");
-        return usersService.login("u", DatatypeConverter.printHexBinary(UsersService.hashPassWord("p")));
-    }
 }

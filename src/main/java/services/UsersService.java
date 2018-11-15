@@ -28,7 +28,7 @@ public class UsersService extends ServiceBase {
         getSession().getTransaction().commit();
 
         if (result.isEmpty()) {
-            throw new NonExistingUserException();
+            throw new NonExistingUserException(userId);
         }
 
         return first(result);
@@ -39,7 +39,7 @@ public class UsersService extends ServiceBase {
         try {
             add(user);
         } catch (ConstraintViolationException e) {
-            throw new UserExistsException(e);
+            throw new UserExistsException(username);
         }
     }
 
@@ -54,7 +54,7 @@ public class UsersService extends ServiceBase {
         User user = getUser(username, password);
 
         if (user == null) {
-            throw new NonExistingUserException();
+            throw new NonExistingUserException(username);
         }
 
         return new UserSessionsService(getSessionFactory()).startSession(user);
@@ -70,7 +70,7 @@ public class UsersService extends ServiceBase {
         getSession().getTransaction().commit();
 
         if (result.isEmpty()) {
-            throw new NonExistingUserException();
+            throw new NonExistingUserException(username);
         }
 
         return first(result);

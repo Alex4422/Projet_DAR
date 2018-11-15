@@ -21,79 +21,24 @@ import static servlet.Util.failWith;
         name = "UserWatch",
         urlPatterns = {"/api/v1/auth/userWatch"}
 )
-public class UserWatch extends HttpServlet {
-    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        String userToken = req.getParameter("userToken");
-        String showIdStr = req.getParameter("showId");
-        String seasonNumberStr = req.getParameter("seasonNumber");
-        String episodeIdStr = req.getParameter("episodeId");
-        Integer showId;
-        Integer seasonNumber;
-        Integer episodeId;
-        JSONObject jsonResponse = new JSONObject();
-
-        if (showIdStr == null || seasonNumberStr == null || episodeIdStr == null || userToken == null) {
-            jsonResponse.put("error", "Missing parameter");
-            failWith(res, jsonResponse);
-            return;
-        }
-
-        try {
-            showId = Integer.parseInt(showIdStr);
-            seasonNumber = Integer.parseInt(seasonNumberStr);
-            episodeId = Integer.parseInt(episodeIdStr);
-        } catch (NumberFormatException e) {
-            jsonResponse.put("error", "Invalid argument format");
-            failWith(res, jsonResponse);
-            return;
-        }
-
-        try {
-            new WatchService(Main.getFactory()).registerUserWatch(userToken, showId, seasonNumber, episodeId);
-        } catch (UnAuthenticatedUserException e) {
-            jsonResponse.put("error", "Unauthenticated user");
-            failWith(res, jsonResponse);
-            return;
-        }
+public class UserWatch extends ServletBase {
+    @Override
+    public JSONObject processPost() throws Exception {
+        String userToken = getStringParameter("userToken");
+        Integer showId = getIntegerParameter("showId");
+        Integer seasonNumber = getIntegerParameter("seasonNumber");
+        Integer episodeId = getIntegerParameter("episodeId");
+        new WatchService(Main.getFactory()).registerUserWatch(userToken, showId, seasonNumber, episodeId);
+        return null;
     }
 
-    protected void doDelete(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        String userToken = req.getParameter("userToken");
-        String showIdStr = req.getParameter("showId");
-        String seasonNumberStr = req.getParameter("seasonNumber");
-        String episodeIdStr = req.getParameter("episodeId");
-        Integer showId;
-        Integer seasonNumber;
-        Integer episodeId;
-        JSONObject jsonResponse = new JSONObject();
-
-        if (showIdStr == null || seasonNumberStr == null || episodeIdStr == null || userToken == null) {
-            jsonResponse.put("error", "Missing parameter");
-            failWith(res, jsonResponse);
-            return;
-        }
-        try {
-            showId = Integer.parseInt(showIdStr);
-            seasonNumber = Integer.parseInt(seasonNumberStr);
-            episodeId = Integer.parseInt(episodeIdStr);
-        } catch (NumberFormatException e) {
-            jsonResponse.put("error", "Invalid argument format");
-            failWith(res, jsonResponse);
-            return;
-        }
-
-        try {
-            new WatchService(Main.getFactory()).unregisterUserWatch(userToken, showId, seasonNumber, episodeId);
-        } catch (UnregisteredEpisodeException e) {
-            jsonResponse.put("error", "Unregistered episode");
-            failWith(res, jsonResponse);
-        } catch (UnAuthenticatedUserException e) {
-            jsonResponse.put("error", "Unauthenticated user");
-            failWith(res, jsonResponse);
-        } catch (NonExistingUserWatchException e) {
-            jsonResponse.put("error", e.getMessage());
-            failWith(res, jsonResponse);
-        }
-
+    @Override
+    public JSONObject processDelete() throws Exception {
+        String userToken = getStringParameter("userToken");
+        Integer showId = getIntegerParameter("showId");
+        Integer seasonNumber = getIntegerParameter("seasonNumber");
+        Integer episodeId = getIntegerParameter("episodeId");
+        new WatchService(Main.getFactory()).unregisterUserWatch(userToken, showId, seasonNumber, episodeId);
+        return null;
     }
 }
