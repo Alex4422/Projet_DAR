@@ -40,7 +40,7 @@ public class MessagesService extends ServiceBase {
         }
         for (Message msg: messages) {
             JSONObject jsonMessage = new JSONObject();
-            jsonMessage.put("username", msg.getUser().getUsername());
+            jsonMessage.put("userName", msg.getUser().getUsername());
             jsonMessage.put("content", msg.getContent());
             jsonMessage.put("date", msg.getDate());
             jsonMessage.put("id", msg.getId());

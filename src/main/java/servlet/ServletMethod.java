@@ -6,5 +6,5 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 public interface ServletMethod {
-    JSONObject processRequest(HttpServletRequest request) throws Exception;
+    JSONObject processRequest() throws Exception;
 }

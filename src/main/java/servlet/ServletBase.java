@@ -10,12 +10,15 @@ import java.io.IOException;
 // TODO: finish servlets simplification
 
 public abstract class ServletBase extends HttpServlet {
+    private HttpServletRequest request;
+    private HttpServletResponse response;
+
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
         callServletMethod(req, res, this::processGet);
     }
 
-    protected JSONObject processGet(HttpServletRequest req) throws Exception {
+    protected JSONObject processGet() throws Exception {
         return null;
     }
 
@@ -24,7 +27,7 @@ public abstract class ServletBase extends HttpServlet {
         callServletMethod(req, res, this::processPost);
     }
 
-    protected JSONObject processPost(HttpServletRequest req) throws Exception {
+    protected JSONObject processPost() throws Exception {
         return null;
     }
 
@@ -33,12 +36,12 @@ public abstract class ServletBase extends HttpServlet {
         callServletMethod(req, res, this::processDelete);
     }
 
-    protected JSONObject processDelete(HttpServletRequest req) throws Exception {
+    protected JSONObject processDelete() throws Exception {
         return null;
     }
 
-    protected Integer getIntegerParameter(HttpServletRequest req, String parameterName) throws Exception {
-        String paramStr = req.getParameter(parameterName);
+    protected Integer getIntegerParameter(String parameterName) throws Exception {
+        String paramStr = getRequest().getParameter(parameterName);
         if (paramStr == null) {
             throw new Exception("Missing parameter: " + parameterName);
         }
@@ -50,11 +53,31 @@ public abstract class ServletBase extends HttpServlet {
         }
     }
 
+    protected String getStringParameter(String parameterName) throws Exception {
+        String param = getRequest().getParameter(parameterName);
+        if (param == null) {
+            throw new Exception("Missing parameter: " + parameterName);
+        }
+        return param;
+    }
+
+    public HttpServletRequest getRequest() {
+        return request;
+    }
+
+    public HttpServletResponse getResponse() {
+        return response;
+    }
+
     private void callServletMethod(HttpServletRequest req, HttpServletResponse res, ServletMethod method) throws IOException {
+        request = req;
+        response = res;
         try {
-            JSONObject result = method.processRequest(req);
+            JSONObject result = method.processRequest();
             res.setStatus(200);
-            res.getOutputStream().write(result.toString().getBytes());
+            if (result != null) {
+                res.getOutputStream().write(result.toString().getBytes());
+            }
         } catch (Exception e) {
             JSONObject errorBody = new JSONObject();
             errorBody.put("error", e.getMessage());

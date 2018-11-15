@@ -19,19 +19,24 @@ import static servlet.Util.successWith;
         urlPatterns = {"/api/v1/auth/messages"}
 )
 public class Messages extends ServletBase {
-    public void processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        Integer showId = getIntegerParameter(req, "showId");
+    @Override
+    public JSONObject processGet() throws Exception {
+        Integer showId = getIntegerParameter("showId");
         JSONObject jsonResponse = new JSONObject();
+        List<JSONObject> messages = new MessagesService(Main.getFactory()).getJSONShowMessages(showId.toString());
+        jsonResponse.put("messages", messages);
+        return jsonResponse;
+    }
 
-        try {
-            List<JSONObject> messages = new MessagesService(Main.getFactory()).getJSONShowMessages(showId);
-            jsonResponse.put("messages", messages);
-            successWith(res, jsonResponse);
-            return;
-        } catch (NumberFormatException e) {
-            jsonResponse.put("error", "Invalid showId format");
-            failWith(res, jsonResponse);
-            return;
+    @Override
+    public JSONObject processPost() throws Exception {
+        String userToken = getStringParameter("userToken");
+        if (userToken.isEmpty()) {
+            throw new Exception("Empty parameter: userToken");
         }
+        Integer showId = getIntegerParameter("showId");
+        String content = getStringParameter("content");
+        new MessagesService(Main.getFactory()).postMessage(userToken, content, showId.toString());
+        return null;
     }
 }
