@@ -49,9 +49,9 @@ public class UsersService extends ServiceBase {
         return md.digest();
     }
 
-    public UserSession login(String username, String hexHashedPassword) throws NonExistingUserException {
-        byte[] password = DatatypeConverter.parseHexBinary(hexHashedPassword);
-        User user = getUser(username, password);
+    public UserSession login(String username, String password) throws NonExistingUserException {
+        byte[] hexHashedPassword = hashPassWord(password);
+        User user = getUser(username, hexHashedPassword);
 
         if (user == null) {
             throw new NonExistingUserException();

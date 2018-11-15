@@ -3,10 +3,12 @@ package servlet;
 import java.io.IOException;
 
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import entities.UserSession;
 import launch.Main;
 import org.json.JSONObject;
 import services.UsersService;
@@ -39,7 +41,8 @@ public class LoginServlet extends HttpServlet {
         }
 
         try {
-            new UsersService(Main.getFactory()).login(username,password);
+            UserSession session = new UsersService(Main.getFactory()).login(username, password);
+            response.addCookie(new Cookie("userToken", session.getUuid()));
             response.setStatus(200);
             response.getOutputStream().write("OK".getBytes());
         } catch (NonExistingUserException e) {

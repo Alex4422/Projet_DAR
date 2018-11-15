@@ -8,6 +8,7 @@ import FormHelperText from '@material-ui/core/FormHelperText'
 import Input from '@material-ui/core/Input'
 import InputLabel from '@material-ui/core/InputLabel'
 import Button from '@material-ui/core/Button'
+import {SERVER_URL} from "../../pages/app";
 
 const dialogDivStyle = {
     display: "flex",
@@ -18,6 +19,9 @@ const dialogDivStyle = {
 const textFieldStyle = {
     marginBottom: 8,
 }
+
+var request;
+var forge = require('node-forge');
 
 class UserDialogBase extends React.Component {
     constructor(props) {
@@ -40,6 +44,9 @@ class UserDialogBase extends React.Component {
 
     componentDidMount() {
         this.props.onRef(this)
+       // this.fetchData()
+
+
     }
 }
 
@@ -102,6 +109,29 @@ class LoginDialog extends UserDialogBase {
             </Dialog>
         );
     }
+
+    fetchData() {
+        this.setState({userName: []})
+        this.setState({password: []})
+        request = new XMLHttpRequest();
+        //request.open("GET", SERVER_URL + "/search/show?searchValue=" + this.props.match.params.searchValue, true);
+
+
+        //request.open("GET", SERVER_URL + "/login?username=" + this.props.match.userName +"&password=" + this.props.match.params.password, true);
+
+        var password = password.sha256.create();
+
+        request.send(null);
+        request.addEventListener("readystatechange", this.processRequest, false);
+    }
+
+    processRequest() {
+        if (request.readyState === 4 && request.status === 200) {
+            let result = JSON.parse(request.responseText);
+            this.setState({shows: result.results})
+        }
+    }
+
 }
 
 class SignupDialog extends UserDialogBase {
@@ -132,6 +162,17 @@ class SignupDialog extends UserDialogBase {
 
     handlePasswordChange = event => {
         this.setState({password: event.target.value})
+    }
+
+    async submit() {
+        //let api = `${SERVER_URL}/users?username=${this.props.userName}&password=${this.props.password}`;
+        let api = `${SERVER_URL}/users?username=john&password=doe`;
+        let user = await fetch(api, {method: 'post'}).catch(err => console.log(err));
+        //let user = await fetch(login)
+        console.log(user);
+        /*request = new XMLHttpRequest();
+        request.open("POST", api, true);
+        request.send(null);*/
     }
 
     checkFields() {
@@ -195,13 +236,14 @@ class SignupDialog extends UserDialogBase {
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => { this.checkFields() }}>
+                    <Button onClick={() => { /*this.checkFields() &&*/ this.submit() }}>
                         Sign Up
                     </Button>
                 </DialogActions>
             </Dialog>
         );
     }
+
 }
 
 export {LoginDialog, SignupDialog}
