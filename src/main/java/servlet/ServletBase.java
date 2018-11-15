@@ -72,6 +72,7 @@ public abstract class ServletBase extends HttpServlet {
     private void callServletMethod(HttpServletRequest req, HttpServletResponse res, ServletMethod method) throws IOException {
         request = req;
         response = res;
+
         try {
             JSONObject result = method.processRequest();
             res.setStatus(200);

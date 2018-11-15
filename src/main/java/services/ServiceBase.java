@@ -23,7 +23,7 @@ public abstract class ServiceBase {
 
     protected void add(Object o) {
         beginTransaction();
-        getSession().save(o);
+        getSession().persist(o);
         getSession().getTransaction().commit();
     }
 

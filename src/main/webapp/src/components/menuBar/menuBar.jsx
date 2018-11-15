@@ -10,6 +10,7 @@ import Home from '@material-ui/icons/Home'
 
 import {LoginDialog, SignupDialog} from "./user_dialogs";
 import SearchField from "./search_field";
+import AccountView from "./account_view";
 
 class MenuBar extends React.Component {
     render() {
@@ -25,7 +26,7 @@ class MenuBar extends React.Component {
         return (
             <AppBar position="static" color="default">
                 <Toolbar>
-                    <IconButton onClick={() => this.props.history.push('/')}>
+                    <IconButton onClick={() => {this.props.history.push('/')}}>
                         <Home/>
                     </IconButton>
                     <Typography style={labelStyle} variant="h6">
@@ -33,17 +34,27 @@ class MenuBar extends React.Component {
                     </Typography>
                     <SearchField onSearch={(search) => {this.props.history.push("/search/" + search)}}/>
                     <div style={grow}/>
-                    <Button onClick={() => { this.loginDialog.openDialog() }}>
-                        Login
-                    </Button>
-                    <Button onClick={() => { this.signupDialog.openDialog() }}>
-                        Sign Up
-                    </Button>
+                    {this.getUserArea()}
                 </Toolbar>
-                <LoginDialog onRef={(ref) => this.loginDialog = ref}/>
-                <SignupDialog onRef={(ref) => this.signupDialog = ref}/>
+                <LoginDialog context={this.props.context} onRef={(ref) => this.loginDialog = ref}/>
+                <SignupDialog context={this.props.context} onRef={(ref) => this.signupDialog = ref}/>
             </AppBar>
         );
+    }
+
+    getUserArea() {
+        if (this.props.context.userToken === "") {
+            return ([
+                <Button onClick={() => { this.loginDialog.openDialog() }}>
+                    Login
+                </Button>,
+                <Button onClick={() => { this.signupDialog.openDialog() }}>
+                    Sign Up
+                </Button>
+            ])
+        } else {
+            return (<AccountView/>)
+        }
     }
 }
 

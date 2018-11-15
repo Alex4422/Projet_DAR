@@ -18,7 +18,7 @@ public class UserSession implements Serializable {
     @Column (nullable = false)
     private Date date;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     User user;
 

@@ -21,8 +21,8 @@ public class User implements Serializable {
     @Column(nullable = false)
     private byte[] password;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private UserSession session;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<UserSession> session = new HashSet<>();
 
     @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
@@ -64,11 +64,11 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    private void setSession(UserSession session) {
+    private void setSession(Set<UserSession> session) {
         this.session = session;
     }
 
-    public UserSession getSession() {
+    public Set<UserSession> getSession() {
         return session;
     }
 

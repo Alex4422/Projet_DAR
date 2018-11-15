@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-@WebFilter("/*")
+@WebFilter("*")
 public class CORSEnablerFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
