@@ -60,7 +60,7 @@ public class SpoilerDetectionService extends ServiceBase {
 
     private boolean messageContrainsSpoiler(Message message, List<String> spoilerWords) {
         for (String s: spoilerWords) {
-            if (message.getContent().contains(s)) {
+            if (message.getContent().matches(".*\\b" + s + "\\b.*")) {
                 return true;
             }
         }
@@ -72,8 +72,8 @@ public class SpoilerDetectionService extends ServiceBase {
                 .flatMap(description -> Arrays.stream(description.split("\\s")))
                 .collect(groupingBy(Function.identity(), counting()));
         return wordsFrequency.entrySet().stream()
-                .filter(entry -> entry.getValue() > 4)
-                .filter(entry -> !frequentWords.contains(entry.getKey()))
+                .filter(entry -> entry.getValue() >= 6 && entry.getKey().length() > 1)
+                .filter(entry -> !frequentWords.contains(entry.getKey().toLowerCase()))
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
     }
@@ -84,10 +84,13 @@ public class SpoilerDetectionService extends ServiceBase {
         for (Object o: showDetails.getJSONArray("seasons")) {
             seasons.add((int) o);
         }
-        return seasons.stream()
+        return seasons.parallelStream()
                 .map(seasonNumber -> Search.seasonDetails(showId.toString(), seasonNumber.toString()))
                 .flatMap(seasonDetails -> seasonDetails.getJSONArray("episodes").toList().stream())
                 .map(o -> (String) ((HashMap) o).get("overview"))
+                .map(description -> description.replaceAll(",", " ")
+                                               .replaceAll("\\.", " ")
+                                               .replaceAll("'", " "))
                 .collect(Collectors.toList());
     }
 }
