@@ -31,9 +31,6 @@ public class Messages extends ServletBase {
     @Override
     public JSONObject processPost() throws Exception {
         String userToken = getStringParameter("userToken");
-        if (userToken.isEmpty()) {
-            throw new Exception("Empty parameter: userToken");
-        }
         Integer showId = getIntegerParameter("showId");
         String content = getStringParameter("content");
         new MessagesService(Main.getFactory()).postMessage(userToken, content, showId.toString());

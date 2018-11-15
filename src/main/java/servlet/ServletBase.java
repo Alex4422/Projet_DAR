@@ -7,8 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-// TODO: finish servlets simplification
-
 public abstract class ServletBase extends HttpServlet {
     private HttpServletRequest request;
     private HttpServletResponse response;
@@ -57,6 +55,8 @@ public abstract class ServletBase extends HttpServlet {
         String param = getRequest().getParameter(parameterName);
         if (param == null) {
             throw new Exception("Missing parameter: " + parameterName);
+        } else if (param.isEmpty()) {
+            throw new Exception("Empty parameter: " + parameterName);
         }
         return param;
     }

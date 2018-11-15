@@ -1,7 +1,7 @@
 package services.errors;
 
 public class UserExistsException extends ServiceException {
-    public UserExistsException (Exception e) {
-        super(e);
+    public UserExistsException (String username) {
+        super("User " + username + " already exists");
     }
 }

@@ -26,16 +26,6 @@ public class LoginServlet extends ServletBase {
         String username = getStringParameter("username");
         String password = getStringParameter("password");
         JSONObject jsonResponse = new JSONObject();
-
-        if (username.isEmpty()) {
-            jsonResponse.put("error", "Empty username");
-            return jsonResponse;
-        }
-        if (password.isEmpty()) {
-            jsonResponse.put("error", "Empty password");
-            return jsonResponse;
-        }
-
         UserSession newSession = new UsersService(Main.getFactory()).login(username,password);
         jsonResponse.put("userToken", newSession.getUuid());
         return jsonResponse;
