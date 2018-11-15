@@ -57,12 +57,12 @@ public class Search {
         String r = getTarget("/tv/" + showId)
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(String.class);
-        JSONObject result = new JSONObject(r);
+        JSONObject result = processShowDetails(new JSONObject(r));
         Double rating = new RatingService(Main.getFactory()).getAverageRating(Integer.parseInt(showId));
         if (rating != null) {
             result.put("averageRating", rating);
         }
-        return processShowDetails(new JSONObject(r));
+        return result;
     }
 
     private static JSONObject processShowDetails(JSONObject o) {
