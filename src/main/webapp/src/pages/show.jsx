@@ -33,6 +33,7 @@ class ShowDetailsPage extends React.Component {
         this.state = {
             name: "",
             backdrop: "",
+            seasons: [],
             openSeasons: false,
         }
     }
@@ -67,9 +68,10 @@ class ShowDetailsPage extends React.Component {
 
                         <div style={this.nestedSeasonStyle()}>
                             <Collapse in={this.state.openSeasons} timeout="auto" unmountOnExit>
-                               { /*this.state.seasons.map((seasonNumber) => (  <SeasonDetails showId={this.props.match.params.id} seasonNumber={seasonNumber}/> ))*/
-                                   <SeasonDetails showId={this.props.match.params.id} seasonNumber={this.state.seasons}/>
-                               }
+                                {
+                                    this.state.seasons.map((seasonNumber) =>
+                                        (  <SeasonDetails showId={this.props.match.params.id} seasonNumber={seasonNumber}/> ) )
+                                }
                             </Collapse>
                         </div>
                     </List>
