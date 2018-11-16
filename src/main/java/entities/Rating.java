@@ -13,10 +13,10 @@ public class Rating {
     private Integer id;
 
     @Column(nullable = false)
-    Integer showId;
+    private Integer showId;
 
     @Column(nullable = false)
-    Integer rating;
+    private Integer rating;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(nullable = false)

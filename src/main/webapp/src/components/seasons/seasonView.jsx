@@ -36,9 +36,13 @@ class SeasonView extends React.Component {
 
         fetch(SERVER_URL + "/seasonDetails?" + params)
             .then(resp => {
-                if (resp.status !== 400) {
+                if (resp.status === 200) {
                     return resp.json()
+                } else if (resp.status === 401) {
+                    this.props.context.setUserToken("")
+                    this.fetchData()
                 }
+                this.setState({open: false})
             })
             .then(result => {
                 this.setState({episodes: result.episodes})
@@ -100,15 +104,16 @@ class SeasonView extends React.Component {
                     {this.state.episodes.map(e => {
                         const checkBoxVisible = this.props.context.userToken !== "" ? 'visible' : 'hidden';
                         return (
-                            <ListItem button>
+                            <ListItem button onClick={() => this.handleEpisodeChecked(e)}>
                                 <Checkbox theme="light" style={{visibility: checkBoxVisible}}
                                           tabIndex={-1}
                                           checked={e.watched}
-                                          onClick={() => this.handleEpisodeChecked(e)}
                                 />
                                 <ListItemText
                                     primary={
-                                        <Typography color="textPrimary">{e.episode_number} - {e.name}</Typography>
+                                        <Typography color="textPrimary">
+                                            {e.episode_number} - {e.name} ({e.air_date})
+                                        </Typography>
                                     }
                                     secondary={
                                         <Typography color="textSecondary">{e.overview}</Typography>

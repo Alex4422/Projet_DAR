@@ -39,7 +39,8 @@ public class AuthenticationFilter implements Filter {
                 sessionsService.refreshSession(userToken);
             } catch (UnAuthenticatedUserException e) {
                 jsonResponse.put("error", "Unauthenticated user.");
-                failWith((HttpServletResponse) servletResponse, jsonResponse);
+                ((HttpServletResponse) servletResponse).setStatus(401);
+                servletResponse.getOutputStream().write(jsonResponse.toString().getBytes());
                 return;
             }
         }

@@ -65,8 +65,9 @@ public class SeasonDetails extends HttpServlet {
             res.setStatus(500);
             res.getOutputStream().write("Internal server error".getBytes());
         } catch (UnAuthenticatedUserException e) {
-            jsonResponse.put("error", e.getMessage());
-            failWith(res, jsonResponse);
+            res.setStatus(401);
+            jsonResponse.put("error", "Unauthenticated user");
+            res.getOutputStream().write(jsonResponse.toString().getBytes());
         }
     }
 }

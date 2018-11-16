@@ -6,6 +6,7 @@ import Card from '@material-ui/core/Card';
 
 import {SERVER_URL, AppContext} from "./app";
 import SeasonView from "../components/seasons/seasonView";
+import ChatView from "../components/chat/chatview";
 
 var request;
 
@@ -26,12 +27,14 @@ const bodyStyle = {
     display: 'flex',
     height: '69%',
     flexDirection: 'row',
+    position: 'relative',
+    bottom: 0,
 };
 
 const cardsStyle = {
     overflow: 'auto',
     margin: 8,
-    width: '50%',
+    width: '100%',
 };
 
 class ShowDetailsPage extends React.Component {
@@ -69,11 +72,7 @@ class ShowDetailsPage extends React.Component {
                                     })}
                                 </Card>,
                                 <Card style={cardsStyle}>
-                                    {this.state.seasons.map(season => {
-                                        return (
-                                            <SeasonView seasonNumber={season} showId={this.props.match.params.id}/>
-                                        )
-                                    })}
+                                    <ChatView context={ctx} showId={this.props.match.params.id}/>
                                 </Card>
                             ])
                         }}
