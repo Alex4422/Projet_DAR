@@ -1,11 +1,11 @@
 import React, {PropTypes} from 'react';
 import ProfileArea from '../components/ProfileArea';
-//import {connect} from 'react-redux';
+import {connect} from 'react-redux';
 
 class ProfilePage extends React.Component {
 
     componentDidMount() {
-        //const userId = this.props.pageState.auth.id;
+        const userId = this.props.pageState.auth.id;
     }
 
 
@@ -29,11 +29,16 @@ class ProfilePage extends React.Component {
 }
 
 ProfilePage.propsTypes = {
-    //dispatch: PropTypes.func.isRequired,
-    //pageState: PropTypes.object.isRequired
+    dispatch: PropTypes.func.isRequired,
+    pageState: PropTypes.object.isRequired
 };
 
+function mapStateToProps(state) {
+    return {
+        pageState: state
+    }
+}
 
 
 
-export default ProfilePage;
+export default connect(mapStateToProps)(ProfilePage);
