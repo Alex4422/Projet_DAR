@@ -5,6 +5,7 @@ import HomePage from './home';
 import RoutedMenuBar from '../components/menuBar/menuBar';
 import SearchPage from "./search";
 import ShowDetailsPage from "./show";
+import ProfilePage from './ProfilePage';
 
 const AppContext = React.createContext();
 
@@ -35,6 +36,7 @@ class App extends React.Component {
                             <Route exact path="/" component={HomePage}/>
                             <Route path="/search/:searchValue" component={SearchPage}/>
                             <Route path="/showPage/:id" component={ShowDetailsPage}/>
+                            <Route path="/profile" component={ProfilePage}/>
                         </div>
                     </div>
                 </HashRouter>
