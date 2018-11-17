@@ -2,8 +2,10 @@ package services;
 
 import entities.User;
 import entities.UserSession;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import services.errors.UnAuthenticatedUserException;
 
 import java.util.Calendar;
@@ -23,6 +25,15 @@ public class UserSessionsService extends ServiceBase {
 
     public void clear() {
         super.clearTable("UserSession");
+    }
+
+    public void endSession(String userToken) {
+        beginTransaction();
+        Criteria criteria = getSession().createCriteria(UserSession.class);
+        criteria.add(Restrictions.eq("uuid", userToken));
+        List<UserSession> s = criteria.list();
+        getSession().getTransaction().commit();
+        delete(s);
     }
 
     public UserSession retrieveSession(String userToken) throws UnAuthenticatedUserException {

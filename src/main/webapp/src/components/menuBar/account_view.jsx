@@ -4,6 +4,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
+import {SERVER_URL} from "../../pages/app";
 
 class AccountView extends React.Component {
     state = {
@@ -30,9 +31,25 @@ class AccountView extends React.Component {
                   open={anchor != null}
                   onClose={this.closeMenu.bind(this)}>
                 <MenuItem onClick={this.closeMenu.bind(this)}>Profile</MenuItem>
-                <MenuItem onClick={this.closeMenu.bind(this)}>Logout</MenuItem>
+                <MenuItem onClick={this.handleLogoutClick.bind(this)}>Logout</MenuItem>
             </Menu>
         )
+    }
+
+    handleLogoutClick() {
+        this.closeMenu();
+        this.logout();
+    }
+
+    logout() {
+        const url = SERVER_URL + "/auth/logout";
+        const params = "userToken=" + this.props.context.userToken
+        fetch(url, {
+            method: 'POST',
+            body: params,
+            headers: {'Content-type': "application/x-www-form-urlencoded; charset=UTF-8"}
+        });
+        this.props.context.setUserToken("")
     }
 
     openMenu(event) {

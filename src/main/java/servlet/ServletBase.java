@@ -1,6 +1,7 @@
 package servlet;
 
 import org.json.JSONObject;
+import services.errors.UnAuthenticatedUserException;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -61,6 +62,16 @@ public abstract class ServletBase extends HttpServlet {
         return param;
     }
 
+    protected boolean getBoolParameter(String parameterName) throws Exception {
+        String param = getRequest().getParameter(parameterName);
+        if (param == null) {
+            throw new Exception("Missing parameter: " + parameterName);
+        } else if (param.isEmpty()) {
+            throw new Exception("Empty parameter: " + parameterName);
+        }
+        return param.toLowerCase().equals("true");
+    }
+
     public HttpServletRequest getRequest() {
         return request;
     }
@@ -79,6 +90,11 @@ public abstract class ServletBase extends HttpServlet {
             if (result != null) {
                 res.getOutputStream().write(result.toString().getBytes());
             }
+        } catch (UnAuthenticatedUserException e) {
+            JSONObject errorBody = new JSONObject();
+            errorBody.put("error", "Unauthenticated user");
+            res.setStatus(401);
+            res.getOutputStream().write(errorBody.toString().getBytes());
         } catch (Exception e) {
             JSONObject errorBody = new JSONObject();
             errorBody.put("error", e.getMessage());

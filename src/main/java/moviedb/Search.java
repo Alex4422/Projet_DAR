@@ -113,7 +113,7 @@ public class Search {
 
     private static JSONObject processEpisode(JSONObject episode) {
         JSONObject result = filterFields(
-                Arrays.asList("name", "id", "overview","episode_number", "season_number", "show_id"),
+                Arrays.asList("name", "id", "overview","episode_number", "season_number", "show_id", "air_date"),
                 episode);
         result.put("watched", false);
         return result;

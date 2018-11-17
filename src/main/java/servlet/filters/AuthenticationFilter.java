@@ -7,6 +7,7 @@ import services.errors.UnAuthenticatedUserException;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -23,21 +24,25 @@ public class AuthenticationFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException
     {
-        String userToken = servletRequest.getParameter("userToken");
-        JSONObject jsonResponse = new JSONObject();
+        if (!((HttpServletRequest) servletRequest).getMethod().equals("OPTIONS")) {
+            String userToken = servletRequest.getParameter("userToken");
+            JSONObject jsonResponse = new JSONObject();
 
-        if (userToken == null || userToken.isEmpty()) {
-            jsonResponse.put("error", "You must provide a user token.");
-            failWith((HttpServletResponse) servletResponse, jsonResponse);
-            return;
-        }
+            if (userToken == null || userToken.isEmpty()) {
+                jsonResponse.put("error", "You must provide a user token.");
+                failWith((HttpServletResponse) servletResponse, jsonResponse);
+                return;
+            }
 
-        try {
-            UserSessionsService sessionsService = new UserSessionsService(Main.getFactory());
-            sessionsService.refreshSession(userToken);
-        } catch (UnAuthenticatedUserException e) {
-            jsonResponse.put("error", "Unauthenticated user.");
-            failWith((HttpServletResponse) servletResponse, jsonResponse);
+            try {
+                UserSessionsService sessionsService = new UserSessionsService(Main.getFactory());
+                sessionsService.refreshSession(userToken);
+            } catch (UnAuthenticatedUserException e) {
+                jsonResponse.put("error", "Unauthenticated user.");
+                ((HttpServletResponse) servletResponse).setStatus(401);
+                servletResponse.getOutputStream().write(jsonResponse.toString().getBytes());
+                return;
+            }
         }
 
         filterChain.doFilter(servletRequest, servletResponse);
