@@ -1,24 +1,20 @@
 package servlet;
-
-import java.io.IOException;
+import launch.Main;
+import org.json.JSONObject;
+import services.UsersService;
 
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(
-        name = "DemoServlet",
-        urlPatterns = {"/api/users/signup"}
+        name = "UsersServlet",
+        urlPatterns = {"/api/v1/users"}
 )
-public class Users extends HttpServlet {
+public class Users extends ServletBase {
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse res)
-    throws IOException{
-        req.getParameter("login");
-
-        res.getOutputStream().write("{ userToken: 12ft35rdeba }".getBytes());
-        res.getOutputStream().flush();
-        res.getOutputStream().close();
+    public JSONObject processPost() throws Exception {
+        String username = getStringParameter("username");
+        String password = getStringParameter("password");
+        new UsersService(Main.getFactory()).addUser(username, password);
+        return null;
     }
 }
