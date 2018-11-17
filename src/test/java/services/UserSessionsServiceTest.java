@@ -18,7 +18,7 @@ public class UserSessionsServiceTest extends TestWithDb {
     @Test
     public void retrieveUserSession() throws UserExistsException, NonExistingUserException, UnAuthenticatedUserException {
         UsersService s = new UsersService(getSessionFactory());
-        s.addUser("username", "password");
+        s.addUser("username", DatatypeConverter.printHexBinary(UsersService.hashPassWord("password")));
         String token = s.login("username", DatatypeConverter.printHexBinary(UsersService.hashPassWord("password")))
                 .getUuid();
 
@@ -30,7 +30,7 @@ public class UserSessionsServiceTest extends TestWithDb {
     @Test(expected = UnAuthenticatedUserException.class)
     public void retriveUnAuthenticatedUserSession() throws UserExistsException, UnAuthenticatedUserException {
         UsersService s = new UsersService(getSessionFactory());
-        s.addUser("username", "password");
+        s.addUser("username", DatatypeConverter.printHexBinary(UsersService.hashPassWord("password")));
 
         UserSessionsService userSessionsService = new UserSessionsService(getSessionFactory());
         userSessionsService.retrieveSession("randomSessionToken");
@@ -39,7 +39,7 @@ public class UserSessionsServiceTest extends TestWithDb {
     @Test
     public void refreshSession() throws UserExistsException, NonExistingUserException, InterruptedException, UnAuthenticatedUserException {
         UsersService s = new UsersService(getSessionFactory());
-        s.addUser("username", "password");
+        s.addUser("username", DatatypeConverter.printHexBinary(UsersService.hashPassWord("password")));
         String token = s.login("username", DatatypeConverter.printHexBinary(UsersService.hashPassWord("password")))
                 .getUuid();
         Thread.sleep(2000);
@@ -56,8 +56,8 @@ public class UserSessionsServiceTest extends TestWithDb {
     @Test(expected = UnAuthenticatedUserException.class)
     public void revokeOldSessions() throws UserExistsException, NonExistingUserException, InterruptedException, UnAuthenticatedUserException {
         UsersService s = new UsersService(getSessionFactory());
-        s.addUser("u1", "p1");
-        s.addUser("u2", "p2");
+        s.addUser("u1", DatatypeConverter.printHexBinary(UsersService.hashPassWord("p1")));
+        s.addUser("u2", DatatypeConverter.printHexBinary(UsersService.hashPassWord("p2")));
         String u1Token = s.login("u1", DatatypeConverter.printHexBinary(UsersService.hashPassWord("p1")))
                 .getUuid();
         String u2Token = s.login("u2", DatatypeConverter.printHexBinary(UsersService.hashPassWord("p2")))

@@ -1,5 +1,7 @@
 import React from 'react';
-import {withRouter} from 'react-router-dom'
+import {withRouter} from 'react-router-dom';
+
+import StarRatingComponent from 'react-star-rating-component';
 
 import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
@@ -44,18 +46,64 @@ class ShowDetailsPage extends React.Component {
             name: "",
             backdrop: "",
             seasons: [],
+            averageRating: null,
+            userRating: null,
+        }
+    }
+
+    rateShow(userToken, rating) {
+        this.setState({userRating: rating});
+        const url = SERVER_URL + "/auth/rating";
+        const params = "userToken=" + userToken +
+            "&showId=" + this.props.match.params.id +
+            "&rating=" + rating;
+        fetch(url, {
+            method: 'POST',
+            body: params,
+            headers: {'Content-type': "application/x-www-form-urlencoded; charset=UTF-8"}
+        });
+        this.fetchData();
+    }
+
+    renderRatingArea() {
+        return (
+            <AppContext>
+                {ctx => {
+                    if (ctx.userToken !== "") {
+                        return (
+                            <StarRatingComponent
+                                starCount={10}
+                                value={this.state.userRating}
+                                starColor="#0277BD"
+                                emptyStarColor="#888"
+                                onStarClick={(function(next, prev, name) {this.rateShow(ctx.userToken, next)}).bind(this)}/>
+                        )
+                    }
+                }}
+            </AppContext>
+        )
+    }
+
+    renderAverageRating() {
+        if (this.state.averageRating != null) {
+            return (
+                <Typography variant="h5" style={{color: '#FFF'}}>
+                    Average rating: {this.state.averageRating}
+                </Typography>
+            )
         }
     }
 
     render() {
         return (
-
             <div style={rootStyle}>
                 <div style={this.titleBackgroundStyle()}>
                     <div style={titleStyle}>
                         <Typography variant="h2" style={{color: '#fff'}}>
                             {this.state.name}
                         </Typography>
+                        {this.renderRatingArea()}
+                        {this.renderAverageRating()}
                         <Typography variant="h6" style={{maxWidth: 1000, color: '#ccc'}}>
                             {this.state.overview}
                         </Typography>
@@ -109,7 +157,11 @@ class ShowDetailsPage extends React.Component {
 
     fetchData() {
         request = new XMLHttpRequest();
-        request.open("GET", SERVER_URL + "/show?id=" + this.props.match.params.id, true);
+        let params = "id=" + this.props.match.params.id;
+        if (this.props.context.userToken !== "") {
+            params += "&userToken=" + this.props.context.userToken
+        }
+        request.open("GET", SERVER_URL + "/show?" + params, true);
         request.send(null);
         request.addEventListener("readystatechange", this.processRequest.bind(this), false);
     }
@@ -122,10 +174,11 @@ class ShowDetailsPage extends React.Component {
                 backdrop: result.backdrop_path,
                 overview: result.overview,
                 seasons: result.seasons,
+                averageRating: result.average_rating,
+                userRating: result.rating,
             })
         }
     }
-
 }
 
 export default withRouter(ShowDetailsPage)

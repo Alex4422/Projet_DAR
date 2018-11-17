@@ -53,6 +53,6 @@ public class MessagesServleTest extends ServletTest {
 
         JSONObject msg = messages.getJSONObject(0);
         assertEquals("Hello World", msg.getString("content"));
-        assertEquals(Users.USERNAME, msg.getString("userName"));
+        assertEquals(Users.USERNAME, msg.getString("username"));
     }
 }

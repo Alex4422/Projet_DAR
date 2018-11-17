@@ -32,7 +32,8 @@ class UserDialogBase extends React.Component {
     }
 
     state = {
-        open: false
+        open: false,
+        globalHelper: '',
     };
 
     openDialog() {
@@ -46,6 +47,12 @@ class UserDialogBase extends React.Component {
 
     componentDidMount() {
         this.props.onRef(this)
+    }
+
+    handleSubmit() {
+        if (this.checkFields()) {
+            this.submit()
+        }
     }
 }
 
@@ -63,7 +70,6 @@ class LoginDialog extends UserDialogBase {
             password: '',
             passwordHelper: '',
             pendingRequest: false,
-            globalHelper: '',
         })
     }
 
@@ -157,10 +163,6 @@ class LoginDialog extends UserDialogBase {
 class SignupDialog extends UserDialogBase {
     reset() {
         this.setState({
-            firstName: '',
-            firstNameHelper: '',
-            lastName: '',
-            lastNameHelper: '',
             userName: '',
             userNameHelper: '',
             password: '',
@@ -168,35 +170,15 @@ class SignupDialog extends UserDialogBase {
         })
     }
 
-    handleFirstNameChange = event => {
-        this.setState({firstName: event.target.value})
-    };
-
-    handleLastNameChange = event => {
-        this.setState({lastName: event.target.value})
-    }
-
     handleUsernameChange = event => {
         this.setState({userName: event.target.value})
-    }
+    };
 
     handlePasswordChange = event => {
         this.setState({password: event.target.value})
-    }
+    };
 
     checkFields() {
-        if (this.state.firstName === "") {
-            this.setState({firstNameHelper: "The first name cannot be empty"})
-        } else {
-            this.setState({firstNameHelper: ""})
-        }
-
-        if (this.state.lastName === "") {
-            this.setState({lastNameHelper: "The last name cannot be empty"})
-        } else {
-            this.setState({lastNameHelper: ""})
-        }
-
         if (this.state.userName === "") {
             this.setState({userNameHelper: "The username cannot be empty"})
         } else {
@@ -209,10 +191,26 @@ class SignupDialog extends UserDialogBase {
             this.setState({passwordHelper: ""})
         }
 
-        return this.state.firstNameHelper === '' &&
-            this.state.lastNameHelper === '' &&
-            this.state.userNameHelper === '' &&
+        return this.state.userNameHelper === '' &&
             this.state.passwordHelper === ''
+    }
+
+    submit() {
+        const digest = forge.md.sha256.create();
+        digest.update(this.state.password);
+        const hashedPassword = digest.digest().toHex();
+        const params = "username=" + this.state.userName + "&password=" + hashedPassword
+        fetch(SERVER_URL + "/users?" + params, {method: 'post'})
+            .then(resp => {
+                if (resp.status === 400) {
+                    this.setState({globalHelper: "This username is already taken."})
+                } else {
+                    this.setState({open: false})
+                }
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
 
     render() {
@@ -222,16 +220,6 @@ class SignupDialog extends UserDialogBase {
                 <DialogTitle>Sign Up</DialogTitle>
                 <DialogContent>
                     <div style={dialogDivStyle}>
-                        <FormControl error={this.state.firstNameHelper !== ''}>
-                            <InputLabel>First Name</InputLabel>
-                            <Input onChange={this.handleFirstNameChange}/>
-                            <FormHelperText id="component-error-text">{this.state.firstNameHelper}</FormHelperText>
-                        </FormControl>
-                        <FormControl error={this.state.lastNameHelper !== ""}>
-                            <InputLabel>Last Name</InputLabel>
-                            <Input onChange={this.handleLastNameChange}/>
-                            <FormHelperText id="component-error-text">{this.state.lastNameHelper}</FormHelperText>
-                        </FormControl>
                         <FormControl error={this.state.userNameHelper !== ""}>
                             <InputLabel>Username</InputLabel>
                             <Input onChange={this.handleUsernameChange}/>
@@ -243,9 +231,12 @@ class SignupDialog extends UserDialogBase {
                             <FormHelperText id="component-error-text">{this.state.passwordHelper}</FormHelperText>
                         </FormControl>
                     </div>
+                    <Typography color="error">
+                        {this.state.globalHelper}
+                    </Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => { this.checkFields() }}>
+                    <Button onClick={this.handleSubmit.bind(this)}>
                         Sign Up
                     </Button>
                 </DialogActions>

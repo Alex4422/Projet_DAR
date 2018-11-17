@@ -35,7 +35,7 @@ public class UsersService extends ServiceBase {
     }
 
     public void addUser(String username, String passWord) throws UserExistsException {
-        User user = new User(username, hashPassWord(passWord));
+        User user = new User(username, DatatypeConverter.parseHexBinary(passWord));
         try {
             add(user);
         } catch (ConstraintViolationException e) {

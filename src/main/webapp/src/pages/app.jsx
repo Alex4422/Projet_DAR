@@ -41,6 +41,7 @@ class App extends React.Component {
     setUserToken(token) {
         this.setState({userToken: token});
         cookies.set('userToken', token, {path: '/'});
+        this.forceUpdate();
     }
 
     render() {
@@ -61,7 +62,15 @@ class App extends React.Component {
                             <div className="content" style={divStyle}>
                                 <Route exact path="/" component={HomePage}/>
                                 <Route path="/search/:searchValue" component={SearchPage}/>
-                                <Route path="/showPage/:id" component={ShowDetailsPage}/>
+                                <Route path="/showPage/:id" render = {() => {return (
+                                    <AppContext.Consumer>
+                                        {ctx => {
+                                            return (
+                                                <ShowDetailsPage context={ctx}/>
+                                            )
+                                        }}
+                                    </AppContext.Consumer>
+                                )}}/>
                             </div>
                         </MuiThemeProvider>
                     </div>

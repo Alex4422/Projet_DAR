@@ -1,6 +1,7 @@
 package servlets;
 
 import entities.User;
+import entities.UserSession;
 import launch.Main;
 import org.json.JSONObject;
 import org.junit.FixMethodOrder;
@@ -39,7 +40,7 @@ public class Users extends ServletTest {
                 .target("http://localhost:8080")
                 .path("/api/v1/users")
                 .queryParam("username", USERNAME)
-                .queryParam("password", PASSWORD)
+                .queryParam("password", DatatypeConverter.printHexBinary(UsersService.hashPassWord(PASSWORD)))
                 .request()
                 .post(null);
     }

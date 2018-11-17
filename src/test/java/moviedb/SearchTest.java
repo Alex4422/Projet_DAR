@@ -35,7 +35,7 @@ public class SearchTest extends TestWithDb {
             UnAuthenticatedUserException
     {
         UsersService s = new UsersService(getSessionFactory());
-        s.addUser("u", "p");
+        s.addUser("u", DatatypeConverter.printHexBinary(UsersService.hashPassWord("p")));
         UserSession userSession = s.login("u", DatatypeConverter.printHexBinary(UsersService.hashPassWord("p")));
         new WatchService(getSessionFactory()).registerUserWatch(userSession.getUuid(), 1100, 6, 62868);
         JSONObject HIMYMSeason6 = Search.seasonDetails("1100", "6", userSession.getUser());

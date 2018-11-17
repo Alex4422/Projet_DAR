@@ -16,7 +16,7 @@ public class UsersServiceTest extends TestWithDb {
         String username = "username";
         String password = "password";
         UsersService s = new UsersService(getSessionFactory());
-        s.addUser(username, password);
+        s.addUser(username, DatatypeConverter.printHexBinary(UsersService.hashPassWord(password)));
         User u = s.getUser(username, UsersService.hashPassWord(password));
         assertEquals(u.getUsername(), username);
     }
@@ -24,8 +24,8 @@ public class UsersServiceTest extends TestWithDb {
     @Test(expected=UserExistsException.class)
     public void failRegisteringExistingUser() throws UserExistsException {
         UsersService s = new UsersService(getSessionFactory());
-        s.addUser("testUser", "password");
-        s.addUser("testUser", "password");
+        s.addUser("testUser", DatatypeConverter.printHexBinary(UsersService.hashPassWord("p")));
+        s.addUser("testUser", DatatypeConverter.printHexBinary(UsersService.hashPassWord("p")));
     }
 
     @Test
@@ -33,7 +33,7 @@ public class UsersServiceTest extends TestWithDb {
         String username = "username";
         String password = "password";
         UsersService s = new UsersService(getSessionFactory());
-        s.addUser(username, password);
+        s.addUser(username, DatatypeConverter.printHexBinary(UsersService.hashPassWord("password")));
         String hashedPawword = DatatypeConverter.printHexBinary(UsersService.hashPassWord(password));
         String userToken = s.login(username, hashedPawword)
                 .getUuid();
@@ -45,7 +45,7 @@ public class UsersServiceTest extends TestWithDb {
         String username = "username";
         String password = "password";
         UsersService s = new UsersService(getSessionFactory());
-        s.addUser(username, password);
+        s.addUser(username, DatatypeConverter.printHexBinary(UsersService.hashPassWord(password)));
         String invalidPassword = DatatypeConverter.printHexBinary(UsersService.hashPassWord("invalidPassword"));
         s.login(username, invalidPassword);
     }

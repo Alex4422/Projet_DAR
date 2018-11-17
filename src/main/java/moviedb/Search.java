@@ -60,7 +60,7 @@ public class Search {
         JSONObject result = processShowDetails(new JSONObject(r));
         Double rating = new RatingService(Main.getFactory()).getAverageRating(Integer.parseInt(showId));
         if (rating != null) {
-            result.put("averageRating", rating);
+            result.put("average_rating", rating);
         }
         return result;
     }

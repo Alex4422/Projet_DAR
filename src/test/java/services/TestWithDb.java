@@ -46,13 +46,13 @@ public class TestWithDb {
 
     protected UserSession registerAndLoginUser() throws UserExistsException, NonExistingUserException {
         UsersService usersService = new UsersService(getSessionFactory());
-        usersService.addUser("u", "p");
+        usersService.addUser("u", DatatypeConverter.printHexBinary(UsersService.hashPassWord("p")));
         return usersService.login("u", DatatypeConverter.printHexBinary(UsersService.hashPassWord("p")));
     }
 
     protected UserSession registerAndLoginUser(String username, String password) throws UserExistsException, NonExistingUserException {
         UsersService usersService = new UsersService(getSessionFactory());
-        usersService.addUser(username, password);
+        usersService.addUser(username, DatatypeConverter.printHexBinary(UsersService.hashPassWord(password)));
         return usersService.login(username, DatatypeConverter.printHexBinary(UsersService.hashPassWord(password)));
     }
 }

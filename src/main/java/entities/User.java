@@ -22,6 +22,9 @@ public class User implements Serializable {
     private byte[] password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Rating> ratings = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<UserSession> session = new HashSet<>();
 
     @ManyToMany(cascade = {CascadeType.ALL})
@@ -78,6 +81,14 @@ public class User implements Serializable {
 
     public void setEpisodes(Set<Episode> episodes) {
         this.episodes = episodes;
+    }
+
+    public Set<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(Set<Rating> ratings) {
+        this.ratings = ratings;
     }
 
     @Override
