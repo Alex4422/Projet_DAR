@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.List;
 
 public class UserSessionsService extends ServiceBase {
+    private static final int SESSION_DURATION_IN_HOUR = 2;
+
     public UserSessionsService(SessionFactory sessionFactory) {
         super(sessionFactory);
     }
@@ -37,6 +39,7 @@ public class UserSessionsService extends ServiceBase {
     }
 
     public UserSession retrieveSession(String userToken) throws UnAuthenticatedUserException {
+        revokeOldSessions(getOldestValidDate());
         String queryString = "FROM UserSession U where U.uuid = :userToken";
         beginTransaction();
         Query query = getSession().createQuery(queryString);
@@ -47,6 +50,12 @@ public class UserSessionsService extends ServiceBase {
             throw new UnAuthenticatedUserException();
         }
         return (UserSession) result.get(0);
+    }
+
+    private Date getOldestValidDate() {
+        Calendar now = Calendar.getInstance();
+        now.add(Calendar.HOUR, SESSION_DURATION_IN_HOUR);
+        return now.getTime();
     }
 
     public User retrieveUser(String userToken) throws UnAuthenticatedUserException {

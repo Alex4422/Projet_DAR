@@ -16,6 +16,7 @@ class MessageView extends React.Component {
     };
 
     vote(spoiler) {
+        this.setState({alreadyVoted: true});
         const url = SERVER_URL + "/auth/userVote";
         const params = "userToken=" + this.props.userToken +
             "&messageId=" + this.props.id +
