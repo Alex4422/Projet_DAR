@@ -6,6 +6,8 @@ import List from '@material-ui/core/List';
 import {SERVER_URL} from "../../pages/app";
 import MessageView from "./messageview";
 
+const POLLING_DELAY = 10000;
+
 const fakeMessages = [
     {id: 1, spoilerProbability: 0.0, username: "TestUser", content: "I can't wait for the new season to be released", date: "2018-11-16 10:45"},
     {id: 1, spoilerProbability: 0.0, username: "TestUser", content: "I can't wait for the new season to be released", date: "2018-11-16 10:45"},
@@ -48,10 +50,10 @@ class ChatView extends React.Component {
     };
 
     componentDidMount() {
-        this.fetchMessages()
+        this.fetchMessages(true)
     }
 
-    fetchMessages() {
+    fetchMessages(recursive) {
         const params = "userToken=" + this.props.context.userToken + "&showId=" + this.props.showId;
         fetch(SERVER_URL + "/auth/messages?" + params)
             .then(resp => {
@@ -62,8 +64,10 @@ class ChatView extends React.Component {
                 }
             })
             .then(result => {
-                console.log(result);
-                this.setState({messages: result.messages})
+                this.setState({messages: result.messages});
+                if (recursive) {
+                    setTimeout(() => this.fetchMessages(true), POLLING_DELAY);
+                }
             })
             .catch(err => {
                 console.log("CHAT:" + err.status);

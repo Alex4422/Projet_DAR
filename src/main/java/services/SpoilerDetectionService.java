@@ -70,6 +70,7 @@ public class SpoilerDetectionService extends ServiceBase {
     public List<String> getSpoilerWordsForShow(Integer showId) {
         Map<String, Long> wordsFrequency =  getDescritpionsForShow(showId).stream()
                 .flatMap(description -> Arrays.stream(description.split("\\s")))
+                .map(String::toLowerCase)
                 .collect(groupingBy(Function.identity(), counting()));
         return wordsFrequency.entrySet().stream()
                 .filter(entry -> entry.getValue() >= 6 && entry.getKey().length() > 1)
