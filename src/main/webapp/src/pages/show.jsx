@@ -71,15 +71,23 @@ class ShowDetailsPage extends React.Component {
                                         )
                                     })}
                                 </Card>,
-                                <Card style={cardsStyle}>
-                                    <ChatView context={ctx} showId={this.props.match.params.id}/>
-                                </Card>
+                                this.renderChat(ctx)
                             ])
                         }}
                     </AppContext.Consumer>
                 </div>
             </div>
         );
+    }
+
+    renderChat(context) {
+        if (context.userToken !== "") {
+            return (
+                <Card style={cardsStyle}>
+                    <ChatView context={context} showId={this.props.match.params.id}/>
+                </Card>
+            );
+        }
     }
 
     titleBackgroundStyle() {

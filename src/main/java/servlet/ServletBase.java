@@ -62,6 +62,16 @@ public abstract class ServletBase extends HttpServlet {
         return param;
     }
 
+    protected boolean getBoolParameter(String parameterName) throws Exception {
+        String param = getRequest().getParameter(parameterName);
+        if (param == null) {
+            throw new Exception("Missing parameter: " + parameterName);
+        } else if (param.isEmpty()) {
+            throw new Exception("Empty parameter: " + parameterName);
+        }
+        return param.toLowerCase().equals("true");
+    }
+
     public HttpServletRequest getRequest() {
         return request;
     }

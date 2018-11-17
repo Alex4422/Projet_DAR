@@ -53,7 +53,7 @@ class MenuBar extends React.Component {
                 </Button>
             ])
         } else {
-            return (<AccountView/>)
+            return (<AccountView context={this.props.context}/>)
         }
     }
 }
