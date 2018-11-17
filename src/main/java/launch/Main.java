@@ -18,7 +18,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         factory = initDb(App.dbUrl());
 
-        String appDir = "src/main/webapp/";
+        String appDir = "src/main/webapp/build";
         Tomcat tomcat = new Tomcat();
 
         String webport = System.getenv("PORT");
